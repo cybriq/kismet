@@ -1,6 +1,10 @@
 # proto
 Protocol for distributed systems governance
 
+## Documentation
+
+- [tokens](doc/tokens.md) folder
+
 ## About
 
 In distributed systems, there is a not well understood distinction between leader selection and consensus. 
