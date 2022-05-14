@@ -30,3 +30,6 @@ Congress tokens grant a position in a limited size congress to make votes on pro
 
 Congress tokens are issued when a Proposal token is used to publish a proposal
 
+#### Veto
+
+Veto token is a special type of token that cancels a proposal. One is issued at genesis by the Benevolent Dictator For Life, and can be used to issue delegate tokens by a special transaction on chain that a delegate provides a public key to authenticate.
