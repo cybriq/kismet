@@ -1,9 +1,10 @@
 # proto
+
 Protocol for distributed systems governance
 
 ## Documentation
 
-- [tokens](doc/tokens.md) folder
+- [tokens](doc/tokens.md) - about proto tokens
 
 ## About
 
