@@ -12,6 +12,12 @@ The total amount of computation dedicated to mining proto tokens will be directl
 2. token type identifier
 3. public key for token
 
+### Token Chain Consensus
+
+Because the data volume of the chain is quite small, instead of a consensus, the blocks are permitted to form a branched tangle format instead. There is no "canonical chain" but rather all new blocks on the chain must be linked to a previous block. This allows forks when the same token is issued to two miners, and not cause a conflict, just counts as two tokens that will affect the issuance rate control difficulty adjustment accordingly for the token type.
+
+The only rule of the consensus is that previous blocks may not be more than an hour old compared to the new token time and nodes can refuse to attach blocks if their clock says the old stamp is too old, and that new tokens cannot be issued before half of their prescribed duration according to stamps.
+
 ### Token types
 
 #### Validator
