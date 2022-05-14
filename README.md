@@ -5,7 +5,7 @@ Protocol for distributed systems governance
 
 In distributed systems, there is a not well understood distinction between leader selection and consensus. 
 
-The great innovation of Bitcoin was not its consensus, as blockchains as authenticity certification are quite an old technology, but rather, the use of proof of work to randomly select a leader to propose a new block.
+The great innovation of Bitcoin was not its consensus. The consensus is simply that the heaviest chain (sum of hashes of the sequence of blocks being the smallest numerical value). The great innovation was using proof of work to decide a leader from an indefinite number of network participants of unlimited size, thus making it completely public and open, unlike the classical distributed systems designs, which require foreknowledge of the leader for a task before it is done.
 
 Proto is a distributed system design that takes this idea of a distributed lottery for issuing a limited supply of tokens, and instead of a direct monetary reward, the tokens are limited right to perform leadership tasks for the network.
 
