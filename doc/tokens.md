@@ -4,6 +4,8 @@
 
 Tokens are issued at a fixed frequency for which the difficulty adjustment algorithm adjusts the maximum hash value target in order to maintain the frequency given the indefinite number of miners attempting to mint them.
 
+The total amount of computation dedicated to mining proto tokens will be directly proportional to the number of competitors vying for governance roles.
+
 ### Token chain block format
 
 1. previous block hash
@@ -14,9 +16,15 @@ Tokens are issued at a fixed frequency for which the difficulty adjustment algor
 
 #### Validator
 
-Validator tokens grant the a spot in the validator queue for a target validator set size of 60 with 60 usages per token, with expiry at 86400 seconds after issuance
+Validator tokens grant the a spot in the validator queue for a target validator set size of 60 with 60 usages per token, with expiry at 86400 seconds after issuance. 
+
+This permits an effective maxmimum of 120 running validators at any given time, but the real effective maximum number of validators is around 90.
 
 Issuance rate aims for 2 tokens per minute to effectively provide 2 minutes of coverage for the network
+
+The validator tokens must be used to produce an announcement of service to become active and the existing validators will record the announcement in the next pBFT chain block, after which the new validators are appended to the validator queue.
+
+The validator queue is maintained at a maximum of 90 members of which 61 votes are required to ratify a pBFT block.
 
 #### Proposal
 
