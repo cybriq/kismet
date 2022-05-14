@@ -7,7 +7,7 @@ In distributed systems, there is a not well understood distinction between leade
 
 The great innovation of Bitcoin was not its consensus, as blockchains as authenticity certification are quite an old technology, but rather, the use of proof of work to randomly select a leader to propose a new block.
 
-Proto is a distributed system design that takes this idea of a distributed lottery for issuing a limited supply of tokens, and instead of a direct monetary reward, the tokens are time limited right to perform leadership tasks for the network.
+Proto is a distributed system design that takes this idea of a distributed lottery for issuing a limited supply of tokens, and instead of a direct monetary reward, the tokens are limited right to perform leadership tasks for the network.
 
 This produces a very small, simple blockchain which only concerns itself with authenticating the winners of these tokens, who can then trade them for a position in a distributed system.
 
