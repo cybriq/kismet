@@ -19,7 +19,7 @@ The tokens obviously will be exchangeable, so mining the tokens can be separated
 
 Further, the core governance token chain will have multiple token types, that will be added to limit and distribute membership in other ways. 
 
-- validator tokens grant a limited number of blocks to be minted on the main chain
+- validator tokens grant a limited number of blocks to be minted on the main chain. These tokens expire in a fixed amount of time after issuance in order to guarantee progress of the main chain, and are supplied at double the needed rate in order to ensure chain progress against a possible denial of service attack.
 - congress tokens grant a limited number of votes on proposals for chain governance to form definite quora
 - proposal tokens, which grant the right to make a proposal to the congress
 
