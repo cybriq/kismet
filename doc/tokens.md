@@ -13,9 +13,14 @@ The total amount of computation dedicated to mining kismet tokens will be direct
 3. [8 bytes] 64 bit nanosecond precise Unix timestamp (nanoseconds since January 1, 1970 UTC, which can record time until 2262 AD)
 4. [32 bytes] difficulty target (computed from parent block(s) targets and timestamps)
 5. [32 bytes] ed25519 public key for token. Miner has a corresponding 64 byte private key that this key authenticates.
-6. [32 bytes] other previous block hash (expected with merge bit set, otherwise not present)
+6. [32 bytes] Congress Proposal Reference - the pBFT chain proposal IPFS hash, expected for proposal type otherwise not present
+7. [32 bytes] other previous block hash (expected with merge bit set, otherwise not present)
 
-The blake3 hash of this entire block of data is the block hash.
+The blake3 hash of this entire block of data is the block hash. Note there is no "nonce" field because the timestamp and public key are both very widely variable within a given block time target window.
+
+There is no merkel root because the chain does not validate transactions, only records block solutions for governance privilege tokens.
+
+The solution of a block is not the blake3 hash, which is just the index value, it is a DivHash, which is computed using data expansion based on multiplication and division of the blocks as Big integers.
 
 ### Token types
 
