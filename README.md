@@ -45,3 +45,5 @@ In addition, the veto token can issue delegates, in order to distribute the veto
 
 The Kismet chain runs independently from the pBFT chain, and refers to it. Proposals are tied to IPFS file repositories that contain the proposal text as well as all associated code that implements it.
 
+The block hash target is not the blake3 hash used for indexing, but uses a Big integer multiplication/division cycle data expansion to make ASIC optimisation impossible.
+

@@ -48,6 +48,8 @@ Proposal tokens can be used to create proposals on the pBFT ledger chain, so lon
 
 Proposals on the pBFT ledger are simply an IPFS hash to a filesystem tree maintained by the proposer.
 
+Proposals have an automatic deadline that is defined as the same amount of blocks until a proposal block expires. Votes are totaled at this time from Congress keys, unless maximum Congress keys have been mined for a proposal and all have been used to cast a vote. Expired proposals cannot be reposted.
+
 #### Congress
 
 Congress tokens grant a position in a limited size congress to make votes on proposals
@@ -57,6 +59,10 @@ Congress tokens are issued when a Proposal token is used to publish a proposal
 Congress tokens are issued at schedule rate of issuance and once the quorum maximum size (give or take one fork at the end) is reached the tokens cannot be further mined, and then the miner can use them to issue a vote on the proposal the token is linked to.
 
 This is an example of a quiescent subchain, it only can be mined if a proposal token is used to mint a new proposal. 
+
+When a quorum is made, in the event of a tie of votes before the deadline of a proposal, the sum of the proposal blocks in each direction is computed and the lowest sum of hashes breaks the deadlock. This also means that merge blocks have a higher vote weight for clearing deadlocks, another incentive to mine merge blocks.
+
+If congress tokens reach the maximum but the last token mined is an extension of a fork, a merge block is waited for, and will inevitably supersede it. Miners are obliged to switch their block target to a merge block by this as soon as their miner becomes aware there is a fork at the end of the governance chain.
 
 #### Veto
 
