@@ -1,6 +1,4 @@
-![logo](doc/logolight.svg)
-
-![logo](doc/logodark.svg)
+![logo](doc/logoshadow.svg)
 
 # κισμέτ
 
@@ -31,13 +29,13 @@ These tokens could be exchanged, but to do so, buyers would have to trust the se
 
 The core governance token chain will have multiple token types, that will be added to limit and distribute membership in other ways. 
 
-- validator tokens grant a limited number of blocks to be minted on the main chain. These tokens expire in a fixed amount of time after issuance in order to guarantee progress of the main chain, and are supplied at double the needed rate in order to ensure chain progress against a possible denial of service attack.
-- congress tokens grant a limited number of votes on proposals for chain governance to form definite quora for finality.
+- validator tokens grant a limited number of blocks to be minted on the main chain. These tokens expire in a fixed amount of time after issuance in order to guarantee progress of the main chain, and are supplied at double the needed rate in order to ensure chain progress against a (remotely) possible denial of service attack.
 - proposal tokens, which grant the right to make a proposal to the congress
+- congress tokens grant a limited number of votes on a specific proposal, can only be mined in a limited number after a proposal is used on the pBFT ledger
 
 Standard fungible tokens are issued to validators on a fixed supply expansion percentage, which is locked and cannot be changed, ever, at a rate of 5% per year, compounded on a block by block basis, which is one second per block. In theory this could be changed, but long centuries of experience proves that any power to change the money supply is always abused. 
 
-As such, the leader of the development team for Kismet will be a benevolent dictatorship for life position, and any proposal involving changing issuance rate will be vetoed by the team as not ever going to do, and this one power to say no to this exact type of proposal is the only privilege. To enable this, the BDFL role includes a key pair that can be used to veto any proposal. It does not grant any other right than stopping proposals.
+As such, the leader of the development team for Kismet will be a benevolent dictatorship for life (BDFL) position, and any proposal involving changing issuance rate will be vetoed by the team as not ever going to do, and this one power to say no to this exact type of proposal is the only privilege. To enable this, the BDFL role includes a key pair that can be used to veto any proposal. It does not grant any other right than stopping proposals.
 
 This privilege will also cover the prohibition of the addition of a key exchange process to the token chain. People can sell the tokens but cannot be sure the seller will not keep the secret key and use it. These are position statements of the BDFL. 
 
