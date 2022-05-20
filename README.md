@@ -1,4 +1,8 @@
-# proto
+![logo](doc/logolight.svg)![logo](doc/logodark.svg)
+
+# κισμέτ
+
+kismet
 
 Protocol for distributed systems governance
 

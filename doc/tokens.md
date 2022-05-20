@@ -1,10 +1,10 @@
 # tokens
 
-## How tokens work in proto
+## How tokens work in kismet
 
 Tokens are issued at a fixed frequency for which the difficulty adjustment algorithm adjusts the maximum hash value target in order to maintain the frequency given the indefinite number of miners attempting to mint them.
 
-The total amount of computation dedicated to mining proto tokens will be directly proportional to the number of competitors vying for governance roles.
+The total amount of computation dedicated to mining kismet tokens will be directly proportional to the number of competitors vying for governance roles.
 
 ### Token chain block format
 
@@ -24,7 +24,7 @@ The only rule of the consensus is that previous blocks may not be more than an h
 
 Validator tokens grant the a spot in the validator queue for a target validator set size of 60 with 60 usages per token, with expiry at 86400 seconds after issuance. 
 
-This permits an effective maxmimum of 120 running validators at any given time, but the real effective maximum number of validators is around 90.
+This permits an effective maximum of 120 running validators at any given time, but the real effective maximum number of validators is around 90.
 
 Issuance rate aims for 2 tokens per minute to effectively provide 2 minutes of coverage for the network
 
