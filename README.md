@@ -6,6 +6,8 @@ kismet
 
 Protocol for distributed systems governance
 
+> Live by the dice, but never go all in - David Vennik
+
 ## Documentation
 
 - [tokens](doc/tokens.md) - about kismet tokens
