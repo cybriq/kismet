@@ -1,4 +1,6 @@
-![logo](doc/logolight.svg)![logo](doc/logodark.svg)
+![logo](doc/logolight.svg)
+
+![logo](doc/logodark.svg)
 
 # κισμέτ
 
