@@ -8,15 +8,14 @@ The total amount of computation dedicated to mining kismet tokens will be direct
 
 ### Token chain block format
 
-1. previous block hash
-2. token type identifier
-3. public key for token
+1. [32 bytes] previous block hash
+2. [1 byte] token type identifier (most significant bit indicates a merge)
+3. [8 bytes] 64 bit nanosecond precise Unix timestamp (nanoseconds since January 1, 1970 UTC, which can record time until 2262 AD)
+4. [32 bytes] difficulty target (computed from parent block(s) targets and timestamps)
+5. [32 bytes] ed25519 public key for token. Miner has a corresponding 64 byte private key that this key authenticates.
+6. [32 bytes] other previous block hash (expected with merge bit set, otherwise not present)
 
-### Token Chain Consensus
-
-Because the data volume of the chain is quite small, instead of a consensus, the blocks are permitted to form a branched tangle format instead. There is no "canonical chain" but rather all new blocks on the chain must be linked to a previous block. This allows forks when the same token is issued to two miners, and not cause a conflict, just counts as two tokens that will affect the issuance rate control difficulty adjustment accordingly for the token type.
-
-The only rule of the consensus is that previous blocks may not be more than an hour old compared to the new token time and nodes can refuse to attach blocks if their clock says the old stamp is too old, and that new tokens cannot be issued before half of their prescribed duration according to stamps.
+The blake3 hash of this entire block of data is the block hash.
 
 ### Token types
 
@@ -36,7 +35,13 @@ The validator queue is maintained at a maximum of 90 members of which 61 votes a
 
 Proposal tokens allow the submission of a chain proposal, which lives on the token chain, and is a link to an IPFS filesystem containing the text of a proposal and ties together the proposal's necessary materials.
 
-Proposal tokens are issued at a rate of 1 every 24 hours, and expire in 28 days
+Proposal tokens expire over time, at any given time the chain permits a number of proposals to exist, and when a new proposal block is found, the oldest is expired. Proposals are mined at a constant rate with a difficulty adjustment schedule that maintains an average time between token issuance, putting a cap on the rate of creating proposals. A proposal can be made to change this rate, if it is found that there is too many proposals being used or too few.
+
+The veto power can be used to cancel proposals under the sole condition of changing the per block reward for validators, which is capped at 5% growth per year.
+
+Proposal tokens can be used to create proposals on the pBFT ledger chain, so long as they are used before they are expired.
+
+Proposals on the pBFT ledger are simply an IPFS hash to a filesystem tree maintained by the proposer.
 
 #### Congress
 
@@ -44,6 +49,10 @@ Congress tokens grant a position in a limited size congress to make votes on pro
 
 Congress tokens are issued when a Proposal token is used to publish a proposal
 
+Congress tokens are issued at schedule rate of issuance and once the quorum maximum size (give or take one fork at the end) is reached the tokens cannot be further mined, and then the miner can use them to issue a vote on the proposal the token is linked to.
+
+This is an example of a quiescent subchain, it only can be mined if a proposal token is used to mint a new proposal. 
+
 #### Veto
 
-Veto token is a special type of token that cancels a proposal. One is issued at genesis by the Benevolent Dictator For Life, and can be used to issue delegate tokens by a special transaction on chain that a delegate provides a public key to authenticate.
+Veto token is a special type of token that cancels a proposal. One is issued at genesis by the Benevolent Dictator For Life, and can be used to issue delegate tokens by a special transaction on chain that a delegate provides a public key to authenticate, in order to revocably grant veto power to others to watch over proposals and reject proposals to change the token emission rate.

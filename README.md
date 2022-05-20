@@ -11,6 +11,7 @@ Protocol for distributed systems governance
 ## Documentation
 
 - [tokens](doc/tokens.md) - about kismet tokens
+- [consensus](doc/consensus.md) - chain selection rules
 
 ## About
 
