@@ -10,10 +10,10 @@ The total amount of computation dedicated to mining kismet tokens will be direct
 
 1. [8 bytes] 64 bit nanosecond precise Unix timestamp (nanoseconds since January 1, 1970 UTC, which can record time until 2262 AD)
 2. [1 byte] token type identifier, provides for up to 256 token types, initially only 3
-3. [1 byte] count of number of previous blocks this block refers to
-4. [32 bytes] difficulty target the following block must exceed, computed from average of parent block(s) targets and a progressively lengthening averaging sample over block timestamp history.
-5. array of [32 bytes] previous block hashes, number present given by previous byte. If block type is Proposal or Congress, last element is the SHA256 IPFS hash. 
-6. [32 bytes] ed25519 public key for token. Miner has a corresponding 64 byte private key that this key authenticates.
+3. [32 bytes] difficulty target the following block must exceed, computed from average of parent block(s) targets and a progressively lengthening averaging sample over block timestamp history.
+4. [32 bytes] previous block hash. 
+5. [32 bytes] ed25519 public key for token. Miner has a corresponding 64 byte private key that this key authenticates.
+6. [32 bytes] IPFS hash for a proposal (only present for proposal and congress tokens).
 
 The blake3 hash of this entire block of data is the block hash. Note there is no "nonce" field because the timestamp and public key are both very widely variable within a given block time target window.
 
@@ -25,11 +25,9 @@ The solution of a block is not the blake3 hash, which is just the index value, i
 
 #### Validator
 
-Validator tokens grant the a spot in the validator queue for a target validator set size of 60 with 60 usages per token, with expiry at 86400 seconds after issuance. 
+Validator tokens grant the a spot in the validator queue for a target validator set size of 60 with 60 usages per token, with expiry at 24 hours after issuance. The expiry is based on blocks, so this means a given validator token expires when there is 2880 blocks mined on top of it. 
 
-This permits an effective maximum of 120 running validators at any given time, but the real effective maximum number of validators is around 90.
-
-Issuance rate aims for 2 tokens per minute to effectively provide 2 minutes of coverage for the network
+These are issued every 30 seconds. This permits an effective maximum of 120 running validators at any given time.
 
 The validator tokens must be used to produce an announcement of service to become active and the existing validators will record the announcement in the next pBFT chain block, after which the new validators are appended to the validator queue.
 
