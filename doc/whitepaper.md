@@ -53,3 +53,27 @@ By these two mechanisms combined, it should be possible to permanently ensure th
 The Veto holder is the political leader, and the Miners are the business leaders. They can nullify each other's attempts to nullify, and force a similar thing to the dissolution of a parliament, annulling a proposal, or annulling the nullification of a proposal. The Veto Holder will be forced to pass on his power to a successor if the majority of miners keep forking his vetos off the chain.
 
 Thus, the Veto key provides for two features, creating a child key, which can be revoked, and creating a successor key, which cancels the parent key.
+
+3.   ## Sensor Network Causality Consensus
+
+A third feature, optional for financial ledgers, but extremely useful for auditible, collaborative, session based realtime interactive systems, such as game worlds and shared creation environments, is the use of the many to many architecture of classical consensus, combined with probabalistic consensus to rapidly decide a sequence of events within a realtime (100ms) time horizon.
+
+With the relative simplicity of chains that only register leadership allocation to network participants, the idea of creating new ledgers, and stepping outside the box of simple financial ledgers into any kind of collaborative log of events on a network with rapid resolution of sequence, this realtime causality consensus can form part of other ledgers that can be spawned in parallel and operate under any arbitrary consensus that users agree on.
+
+The use of parallel, proof of work chains that only grant leadership means that this protocol can be effectively unbounded in its interconnection and potential userbase as well as enabling fixed and fluid parallelisation of data processing for application specific purposes. The session based realtime protocol is just the first proposed subchain. 
+
+In addition to this, it is probable that the consensus can be used in combination with the realtime competition for leadership role tokens, combined with proximity and latency limitation to distribute risk of monopoly of these fast protocols as well.
+
+Such extended protocols need not necessarily be focused on realtime speeds either, but focus instead on the geographic proximity or affinity of users and the temporary nature of the data, which may not need to be stored in mass duplicate for the purposes of the application.
+
+Limiting membership via a hybrid of proof of work and staking can then enable humans to vet membership in a protocol and provide locality limited governance systems.
+
+This element is a little more nebulous and speculative than the first two, but the primary two elements form a foundation that enables such creative collaboration.
+
+## Conclusion
+
+Like all good games, the best rules are the most concise. As such, this is the entire Whitepaper. 
+
+The goal for the first implementation is section 1 and 2. The third section is for future elaboration and intended to be tied back to the first two as their regulatory foundations.
+
+The control of network systems is the ultimate power in human society. The goal of Kismet is to distribute that risk to the most responsible and careful individuals possible. While it looks like just another distributed systems protocol, it is actually the foundation of a system of government as well. 
