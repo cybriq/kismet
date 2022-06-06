@@ -8,7 +8,7 @@ June 2022
 
 
 
-1. ## Introduction
+## Introduction
 
 Currently in the field of public blockchain based financial ledgers there is the Proof of Work chains with random timing and probabalistic finality, and on the other hand, the Proof of Stake classical consensus chains with rapid or instant finality. There is a wide gulf between these two systems as regards to satisfying the requirements for a financial ledger for processing payments. 
 
@@ -18,7 +18,7 @@ Underpinning both models is the idea of distributing risk amongst a group of ent
 
 Proof of Stake chains sacrifice the breadth of this hedge against corruption for fast processing. Proof of Work sacrifices regular processing times for a broader hedge against corruption.
 
-2. ## Proof of Work for Leadership with Classical Consensus
+1. ## Proof of Work for Leadership with Classical Consensus
 
 What Kismet proposes is creating a chain purely for recording the winners of a Proof of Work lottery for various leadership roles, and accumulating these ahead of time to produce a future queue of validators for a classical consensus based on Tendermint's variant of the Practical Byzantine Fault Tolerance protocol.
 
@@ -34,7 +34,7 @@ The problem gets even more acute in the context of Decentralised Finance, where 
 
 Leadership in distributed systems quite simply becomes more and more vulnerable to gaming the less randomly it is given out.
 
-3.   ## Long Term Veto Power Balanced by Forking Power
+2.   ## Long Term Veto Power Balanced by Forking Power
 
 The second big vulnerability of blockchain financial ledgers is another rather popular feature in many new projects, commonly called "governance". This power is likewise distributed to those with the biggest stakes, and enables arbitrary changes in the protocol to be "mandated". 
 
