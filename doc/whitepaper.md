@@ -44,15 +44,17 @@ The first rule of democracy is that if you change the voting rules you can manip
 
 In order to defend against this, there is a role granted to one individual, who can delegate this task of sentinel for governance, and the only power this role has is to stop governance proposals from being passed.
 
-It is a founding statement of the Kismet project that there is two legitimate uses for this veto, one is changing the token emission rate, and the second is changing the rule about the existence of this permanent, succession based role holding the veto power. The veto cannot be used for any other purpose without delegitimising the role. 
+It is a founding statement of the Kismet project that there is two legitimate uses for this veto, one is changing the token emission rate, and the second is changing the rule about the existence of this permanent, succession based role holding the veto power. It would not be legitimate to somewhat expand the number of individuals with such veto power but dividing their power would be illegitimate.
 
 The most invested miners can then enforce this refusal by forking the chain by manually designating a particular proposal being vetoed by an illegitimate holder of the veto power as being invalid, and causing the Proof of Work chain to fork this disputed veto off the chain.
 
 By these two mechanisms combined, it should be possible to permanently ensure that no decision made for the governance of Kismet can change these vitally important foundational rules, nor permit the abuse of this veto power by the majority of miners whose real world, non cheatable investments in mining capacity act can numerically function in the same way as the veto power itself. 
 
-The Veto holder is the political leader, and the Miners are the business leaders. They can nullify each other's attempts to nullify, and force a similar thing to the dissolution of a parliament, annulling a proposal, or annulling the nullification of a proposal. The Veto Holder will be forced to pass on his power to a successor if the majority of miners keep forking his vetos off the chain.
+The Veto holder is the political leader, and the Miners are the business leaders. They can nullify each other's attempts to nullify, and force a similar thing to the dissolution of a parliament, annulling a proposal, or annulling the nullification of a proposal, allowing it to be voted on. The Veto Holder will be forced to pass on his power to a successor if the majority of miners keep forking his vetos off the chain, or he/she can use it wisely.
 
 Thus, the Veto key provides for two features, creating a child key, which can be revoked, and creating a successor key, which cancels the parent key.
+
+It simply is not in the interests of the miners to change this structure of leadership. The stubborn conservatism of the bitcoin mining community has proven to be very effective in stopping the breaking of the security of bitcoin, and we exploit that strength in Kismet.
 
 3.   ## Sensor Network Causality Consensus
 
