@@ -26,18 +26,14 @@ func Blake3(bytes []byte) []byte {
 	return b[:]
 }
 
-// DivHash is a hash function that cuts up the provided bytes, splicing reversed
-// halves together, squaring the halves and then multiplying the products, and
-// then dividing by the reversed original bytes, and repeating with the splice
-// of the forward and reversed product a number of times before finally hashing
-// the bytes of the final very big integer.
+// DivHash is a hash function that combines the use of very large integer
+// multiplication and division in addition to Blake3 hashes to create extremely
+// large integers that cannot be produced without performing these very time
+// expensive iterative long division steps.
 //
-// This serves to create a processing bottleneck of long division that causes
-// intentional, but deterministic rounding errors which can only be created by
-// performing the entire operation, and uses very large integers to ensure that
-// it blows over the top even the largest Level 1 CPU caches when calculating.
-// This will chiefly give advantage to processors with large caches and the
-// longest bit long division units, ie, AMD Zen architecture CPUs.
+// The function has a parameter to repeat the operation. It can completely blow
+// out the stack and heap if it is repeated enough times, so this number is
+// usually only somewhere between 2 and 5 steps at most.
 func DivHash(blockBytes []byte, howmany int) []byte {
 
 	blockLen := len(blockBytes)
