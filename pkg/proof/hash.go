@@ -66,15 +66,32 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 	productDividedByBlockInt := productOfSquares.Div(productOfSquares, reversedBlockInt)
 	ddd := productDividedByBlockInt.Bytes()
 
+	// Scramble the product by hashing progressively shorter segments to produce a
+	// scrambled version
+	dddLen, dddMod := len(ddd)/32, len(ddd)%32
+	if dddMod > 0 {
+		dddLen++
+	}
+	output := make([]byte, dddLen*32)
+	for i := 0; i < dddLen; i++ {
+
+		// we are hashing the next 32 bytes each time
+		segment := Blake3(ddd[32*i : 32*(i+1)])
+		copy(output[32*i:32*(i+1)], segment)
+	}
+
+	// trim the result back to the original length
+	output = output[:len(ddd)]
+
 	// By repeating this process several times we end up with an extremely long
 	// value that doesn't have a shortcut to creating it, and requiring very common
 	// but expensive long division units to produce.
 	if howmany > 0 {
 
-		return DivHash(append(ddd, reverse(ddd)...), howmany-1)
+		return DivHash(output, howmany-1)
 	}
 
 	// After all repetitions are done, the very large bytes produced at the end are
 	// hashed and reversed.
-	return reverse(Blake3(ddd))
+	return reverse(Blake3(output))
 }
