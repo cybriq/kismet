@@ -11,7 +11,8 @@ func reverse(b []byte) []byte {
 	halfBytesLen := bytesLen / 2
 	for i := 0; i < halfBytesLen; i++ {
 
-		// Reversing items in a slice without explicitly defining the intermediary (should be implemented via register)
+		// Reversing items in a slice without explicitly defining the intermediary
+		// (should be implemented via register)
 		b[i], b[bytesLen-i] = b[bytesLen-i], b[i]
 	}
 
@@ -25,15 +26,18 @@ func Blake3(bytes []byte) []byte {
 	return b[:]
 }
 
-// DivHash is a hash function that cuts up the provided bytes, splicing reversed halves together,
-// squaring the halves and then multiplying the products, and repeating with the splice of the forward and reversed
-// product a number of times before finally hashing the bytes of the final very big integer.
+// DivHash is a hash function that cuts up the provided bytes, splicing reversed
+// halves together, squaring the halves and then multiplying the products, and
+// then dividing by the reversed original bytes, and repeating with the splice
+// of the forward and reversed product a number of times before finally hashing
+// the bytes of the final very big integer.
 //
-// This serves to create a processing bottleneck of long division that causes intentional,
-// but deterministic rounding errors which can only be created by performing the entire operation,
-// and uses very large integers to ensure that it blows over the top even the largest Level 1 CPU caches when
-// calculating. This will chiefly give advantage to processors with large caches and the longest bit long division
-// units, ie, AMD Zen architecture CPUs.
+// This serves to create a processing bottleneck of long division that causes
+// intentional, but deterministic rounding errors which can only be created by
+// performing the entire operation, and uses very large integers to ensure that
+// it blows over the top even the largest Level 1 CPU caches when calculating.
+// This will chiefly give advantage to processors with large caches and the
+// longest bit long division units, ie, AMD Zen architecture CPUs.
 func DivHash(blockBytes []byte, howmany int) []byte {
 
 	blockLen := len(blockBytes)
@@ -48,25 +52,29 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 	copy(firstHalf[:blockLen], blockBytes)
 	copy(firstHalf[blockLen:], reverse(blockBytes[blockLen/2:]))
 
-	// Convert the reverse of original block, and the two above values to big integers
+	// Convert the reverse of original block, and the two above values to big
+	// integers
 	reversedBlockInt := big.NewInt(0).SetBytes(reverse(blockBytes))
 	firstHalfInt := big.NewInt(0).SetBytes(firstHalf)
 	secondHalfInt := big.NewInt(0).SetBytes(secondHalf)
 
-	// square each half, then multiply the two products together, and divide by the reverse of the original block
+	// square each half, then multiply the two products together, and divide by the
+	// reverse of the original block
 	squareFirstHalf := firstHalfInt.Mul(firstHalfInt, firstHalfInt)
 	squareSecondHalf := secondHalfInt.Mul(secondHalfInt, secondHalfInt)
 	productOfSquares := firstHalfInt.Mul(squareFirstHalf, squareSecondHalf)
 	productDividedByBlockInt := productOfSquares.Div(productOfSquares, reversedBlockInt)
 	ddd := productDividedByBlockInt.Bytes()
 
-	// By repeating this process several times we end up with an extremely long value that doesn't have a shortcut to
-	// creating it, and requiring very common but expensive long division units to produce.
+	// By repeating this process several times we end up with an extremely long
+	// value that doesn't have a shortcut to creating it, and requiring very common
+	// but expensive long division units to produce.
 	if howmany > 0 {
 
 		return DivHash(append(ddd, reverse(ddd)...), howmany-1)
 	}
 
-	// After all repetitions are done, the very large bytes produced at the end are hashed and reversed.
+	// After all repetitions are done, the very large bytes produced at the end are
+	// hashed and reversed.
 	return reverse(Blake3(ddd))
 }
