@@ -16,6 +16,8 @@ Kismet separates leadership selection from consensus by creating a separate chai
 
 [Whitepaper](doc/whitepaper.md)
 
+[Roadmap](doc/roadmap.md)
+
 ## Building
 
 todo: make a thing that can be built
