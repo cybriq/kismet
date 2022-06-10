@@ -4,7 +4,7 @@ import (
 	"github.com/cloudflare/circl/sign/ed25519"
 )
 
-type BlockType byte
+type BlockType uint16
 
 // The following values signify block types
 const (

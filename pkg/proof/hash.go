@@ -13,7 +13,7 @@ func reverse(b []byte) []byte {
 
 		// Reversing items in a slice without explicitly defining the intermediary
 		// (should be implemented via register)
-		b[i], b[bytesLen-i] = b[bytesLen-i], b[i]
+		b[i], b[bytesLen-i-1] = b[bytesLen-i-1], b[i]
 	}
 
 	return b
@@ -34,7 +34,19 @@ func Blake3(bytes []byte) []byte {
 // The function has a parameter to repeat the operation. It can completely blow
 // out the stack and heap if it is repeated enough times, so this number is
 // usually only somewhere between 2 and 5 steps at most.
+//
+// It is used to hash blocks which are at most 138 bytes long, on which basis
+// each operation is around 150ms The application using this hash needs to take
+// into account the size of the input data when deciding the number of
+// repetitions as it is linearly correlated to the input, and this function
+// takes more than one second on a Ryzen 7 5000 series mobile processor with 5
+// repetitions for this data size, for 138 byte blocks we are recommending 4
+// repetitions.
 func DivHash(blockBytes []byte, howmany int) []byte {
+
+	if len(blockBytes) < 2 {
+		panic("DivHash may not be computed with less than two bytes of input")
+	}
 
 	blockLen := len(blockBytes)
 
@@ -45,8 +57,8 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 
 	// Reverse second half and append to the end of the original bytes
 	secondHalf := make([]byte, blockLen+blockLen/2)
-	copy(firstHalf[:blockLen], blockBytes)
-	copy(firstHalf[blockLen:], reverse(blockBytes[blockLen/2:]))
+	copy(secondHalf[:blockLen], blockBytes)
+	copy(secondHalf[blockLen:], reverse(blockBytes[blockLen/2:]))
 
 	// Convert the reverse of original block, and the two above values to big
 	// integers
@@ -84,7 +96,7 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 	}
 
 	// trim the result back to the original length
-	output = output[:len(ddd)]
+	output = output[:dl]
 
 	// By repeating this process several times we end up with an extremely long
 	// value that doesn't have a shortcut to creating it, and requiring very common
