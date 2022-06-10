@@ -48,7 +48,7 @@ It is a founding statement of the Kismet project that there is two legitimate us
 
 The most invested miners can then enforce this refusal by forking the chain by manually designating a particular proposal being vetoed by an illegitimate holder of the veto power as being invalid, and causing the Proof of Work chain to fork this disputed veto off the chain.
 
-By these two mechanisms combined, it should be possible to permanently ensure that no decision made for the governance of Kismet can change these vitally important foundational rules, nor permit the abuse of this veto power by the majority of miners whose real world, non cheatable investments in mining capacity act can numerically function in the same way as the veto power itself. 
+By these two mechanisms combined, it should be possible to permanently ensure that no decision made for the governance of Kismet can change these vitally important foundational rules, nor permit the abuse of this veto power by the majority of miners whose real world, non cheatable investments in mining capacity collectively function in the same way as the veto power itself. 
 
 The Veto holder is the political leader, and the Miners are the business leaders. They can nullify each other's attempts to nullify, and force a similar thing to the dissolution of a parliament, annulling a proposal, or annulling the nullification of a proposal, allowing it to be voted on. The Veto Holder will be forced to pass on his power to a successor if the majority of miners keep forking his vetos off the chain, or he/she can use it wisely.
 
