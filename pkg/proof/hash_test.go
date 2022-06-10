@@ -70,9 +70,12 @@ func TestDivHash(t *testing.T) {
 func benchmarkDivHash(reps int, b *testing.B) {
 
 	// Maximum block length is 138 bytes for not yet implemented proposal blocks
+	// this will test the block length defined in pkg/blocks/types.go for a
+	// validator token. When proposal blocks are implemented they have a longer time
+	// per operation.
 	empty := Blake3([]byte{})
 	empty = append(empty, empty...)
-	empty = append(empty, empty...)
+	empty = append(empty, empty[:32]...)
 	empty = append(empty, empty[:10]...)
 
 	for i := 0; i < b.N; i++ {
@@ -80,27 +83,26 @@ func benchmarkDivHash(reps int, b *testing.B) {
 		hash := DivHash(empty, reps)
 		empty = hash
 		empty = append(empty, empty...)
-		empty = append(empty, empty...)
+		empty = append(empty, empty[:32]...)
 		empty = append(empty, empty[:10]...)
 	}
 }
 
-// In the following benchmarks, it will be shown that 4 repetitions means around
-// 200ms per operation, and 5 repetitions is close to two seconds. This
-// illustrates why the proof of work will use the value of 4 so there is more
-// than one operation per second:
+// Operation time for DivHash is proportional to input size. Thus, for a given
+// data size a repetition count is chosen based on the benchmark below:
 //
 // $ go test -bench=. ./pkg/proof/.
-//
 // goos: linux
 // goarch: amd64
 // pkg: github.com/cybriq/kismet/pkg/proof
 // cpu: AMD Ryzen 7 5800H with Radeon Graphics
-// BenchmarkDivHash1-16               10000            312011 ns/op
-// BenchmarkDivHash2-16                 739           2352203 ns/op
-// BenchmarkDivHash3-16                  50          21161733 ns/op
-// BenchmarkDivHash4-16                   5         205971239 ns/op
-// BenchmarkDivHash5-16                   1        1988317204 ns/op
+// BenchmarkDivHash1-16               10000            226545 ns/op
+// BenchmarkDivHash2-16                 763           1815126 ns/op
+// BenchmarkDivHash3-16                  82          15908234 ns/op
+// BenchmarkDivHash4-16                   7         148824596 ns/op
+// BenchmarkDivHash5-16                   1        1325919974 ns/op
+// PASS
+// ok      github.com/cybriq/kismet/pkg/proof      14.759s
 
 func BenchmarkDivHash1(b *testing.B) { benchmarkDivHash(1, b) }
 func BenchmarkDivHash2(b *testing.B) { benchmarkDivHash(2, b) }
