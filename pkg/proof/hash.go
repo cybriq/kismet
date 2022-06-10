@@ -64,15 +64,22 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 
 	// Scramble the product by hashing progressively shorter segments to produce a
 	// scrambled version
-	dddLen, dddMod := len(ddd)/32, len(ddd)%32
+	dl := len(ddd)
+	dddLen, dddMod := dl/32, dl%32
 	if dddMod > 0 {
 		dddLen++
 	}
 	output := make([]byte, dddLen*32)
 	for i := 0; i < dddLen; i++ {
 
+		// clamp the end to the end
+		end := 32 * (i + 1)
+		if end > dl {
+			end = dl
+		}
+
 		// we are hashing the next 32 bytes each time
-		segment := Blake3(ddd[32*i : 32*(i+1)])
+		segment := Blake3(ddd[32*i : end])
 		copy(output[32*i:32*(i+1)], segment)
 	}
 
