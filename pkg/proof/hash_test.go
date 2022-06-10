@@ -52,7 +52,7 @@ func TestDivHash(t *testing.T) {
 	empty = append(empty, empty...)
 	empty = append(empty, empty[:10]...)
 	for i := 0; i < 32; i++ {
-		hash := DivHash(empty[:138], 4)
+		hash := DivHash4(empty[:138])
 		empty = hash
 		empty = append(empty, empty...)
 		empty = append(empty, empty...)
