@@ -43,7 +43,10 @@ func TestDivHash(t *testing.T) {
 		"6e217044df9b43d4028221bd666e569f4b092c51bee603da3e6b09aff160d92f",
 	}
 	o := "\n\texpected := []string{\n"
-	// Maximum block length is 138 bytes for not yet implemented proposal blocks
+	// Standard block size is 138 bytes for a validator block. If another hash is
+	// added to the block for proposals or other linked content such as a merkle
+	// root for a transaction payload, the result is about 30% more processing time
+	// per operation.
 	empty := Blake3([]byte{})
 	empty = append(empty, empty...)
 	empty = append(empty, empty...)

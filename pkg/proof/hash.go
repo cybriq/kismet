@@ -31,18 +31,20 @@ func Blake3(bytes []byte) []byte {
 // large integers that cannot be produced without performing these very time
 // expensive iterative long division steps.
 //
-// The function has a parameter to repeat the operation. It can completely blow
-// out the stack and heap if it is repeated enough times, so this number is
-// usually only somewhere between 2 and 5 steps at most.
+// This hash function has an operation time proportional to the size of the
+// input. As such, applications using this function must use a repetition
+// parameter fit for the duration delay sought in the application.
 //
-// It is used to hash blocks which are at most 138 bytes long, on which basis
-// each operation is around 150ms The application using this hash needs to take
-// into account the size of the input data when deciding the number of
-// repetitions as it is linearly correlated to the input, and this function
-// takes more than one second on a Ryzen 7 5000 series mobile processor with 5
-// repetitions for this data size, for 138 byte blocks we are recommending 4
-// repetitions.
-func DivHash(blockBytes []byte, howmany int) []byte {
+// This hash function will have a relatively flat difference in performance
+// proportional to the integer long division unit in the processor. Because this
+// unit is the most complex, and the operation is the most non-optimisable
+// integer mathematics function this forms the basis of the fairest possible
+// proof of work function that places miners on the flattest playing field
+// possible and pits their use of this hardware against almost all computer
+// systems applications is market competition. Long division performance is
+// almost linearly proportional to transistor count, which is almost linearly
+// proportional to relative cost.
+func DivHash(blockBytes []byte, repetitions int) []byte {
 
 	if len(blockBytes) < 2 {
 		panic("DivHash may not be computed with less than two bytes of input")
@@ -101,12 +103,16 @@ func DivHash(blockBytes []byte, howmany int) []byte {
 	// By repeating this process several times we end up with an extremely long
 	// value that doesn't have a shortcut to creating it, and requiring very common
 	// but expensive long division units to produce.
-	if howmany > 0 {
+	if repetitions > 0 {
 
-		return DivHash(output, howmany-1)
+		return DivHash(output, repetitions-1)
 	}
 
 	// After all repetitions are done, the very large bytes produced at the end are
 	// hashed and reversed.
 	return reverse(Blake3(output))
+}
+
+func DivHash4(input []byte) []byte {
+	return DivHash(input, 4)
 }
