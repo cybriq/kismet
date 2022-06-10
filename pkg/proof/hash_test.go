@@ -3,6 +3,8 @@ package proof
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/cybriq/kismet/pkg/block"
+	"github.com/cybriq/kismet/pkg/hash"
 	"testing"
 )
 
@@ -43,28 +45,28 @@ func TestDivHash(t *testing.T) {
 		"6e217044df9b43d4028221bd666e569f4b092c51bee603da3e6b09aff160d92f",
 	}
 	o := "\n\texpected := []string{\n"
-	// Standard block size is 138 bytes for a validator block. If another hash is
+	// Standard block size is 106 bytes for a validator block. If another hash is
 	// added to the block for proposals or other linked content such as a merkle
 	// root for a transaction payload, the result is about 30% more processing time
 	// per operation.
 	empty := Blake3([]byte{})
 	empty = append(empty, empty...)
-	empty = append(empty, empty...)
+	empty = append(empty, empty[:hash.HashLen]...)
 	empty = append(empty, empty[:10]...)
 	for i := 0; i < 32; i++ {
-		hash := DivHash4(empty[:138])
-		empty = hash
+		h := DivHash4(empty[:block.Block{}.SerialLen()])
+		empty = h
 		empty = append(empty, empty...)
-		empty = append(empty, empty...)
+		empty = append(empty, empty[:hash.HashLen]...)
 		empty = append(empty, empty[:10]...)
 		expect, err := hex.DecodeString(expected[i])
 		if err != nil {
 			t.Fatalf("error decoding hex string '%s': %v", expected[i], err)
 		}
-		if string(hash) != string(expect) {
+		if string(h) != string(expect) {
 			t.Fatalf("")
 		}
-		o += fmt.Sprintf("\t\t\"%s\",\n", hex.EncodeToString(hash))
+		o += fmt.Sprintf("\t\t\"%s\",\n", hex.EncodeToString(h))
 	}
 	o += "\t}\n"
 	t.Log("generated:\n", o)
@@ -72,8 +74,8 @@ func TestDivHash(t *testing.T) {
 
 func benchmarkDivHash(reps int, b *testing.B) {
 
-	// Maximum block length is 138 bytes for not yet implemented proposal blocks
-	// this will test the block length defined in pkg/blocks/types.go for a
+	// Maximum block length is 138 bytes for not yet implemented proposal blocks but
+	// this will test the block length defined in pkg/blocks/block.go for a
 	// validator token. When proposal blocks are implemented they have a longer time
 	// per operation.
 	empty := Blake3([]byte{})
