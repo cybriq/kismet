@@ -4,17 +4,14 @@ import (
 	"fmt"
 	"github.com/cloudflare/circl/sign/ed25519"
 	"github.com/cybriq/kismet/pkg/hash"
+	"github.com/cybriq/kismet/pkg/known"
 	"github.com/cybriq/kismet/pkg/proof"
 )
-
-// BlockType is the type of a block. Using 16 bit values we can have up to 65536
-// which should be more than enough for one platform
-type BlockType uint16
 
 // Block is the base block structure, which can be extended for specific types
 type Block struct {
 	// Type is the type code
-	Type BlockType
+	Type known.Type
 
 	// Time is a unix 64 bit timestamp in nanoseconds that can measure until 2262 AD.
 	Time int64
@@ -96,7 +93,7 @@ func Unmarshal(serial WireBlock) (b Block, err error) {
 	b.PublicKey = make([]byte, ed25519.PublicKeySize)
 
 	// again, just doing this directly is the fastest.
-	b.Type = BlockType(serial[0]) + BlockType(serial[1])<<8
+	b.Type = known.Type(serial[0]) + known.Type(serial[1])<<8
 	b.Time = int64(serial[2]) +
 		int64(serial[3])<<8 +
 		int64(serial[4])<<16 +
