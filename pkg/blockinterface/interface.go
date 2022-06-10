@@ -31,6 +31,18 @@ import (
 // the .Block field of derivatives. Thus, this getter is in the interface. For
 // extended fields, this interface will assume the consuming code knows the type
 // to assert to.
+//
+// This also implicitly dictates that any implementation of this interface must
+// be derived from the block.Block type. The type contains purely the generic
+// elements of a block, without any payload. Most likely extensions will contain
+// only one extra hash, being a reference to another data repository of some
+// kind, but it could be more than this, so it is left open.
+//
+// Actual handling of unknown block types will be handled in a separate signed
+// packet library that deals only with signed raw bytes, which will also assume
+// the first two bytes of the payload are a type identifier and provide an
+// interface to add to block code that checks a table of known types, which will
+// be found in the block package anyway.
 type Type interface {
 	SerialLen() int
 	Serialize() (bytes []byte, err error)

@@ -11,19 +11,9 @@ import (
 // which should be more than enough for one platform
 type BlockType uint16
 
-const (
-	// ValidatorBlock is for a slot in the block production schedule
-	ValidatorBlock BlockType = iota
-
-	// NullBlock is an invalid block type and marks the type number after the last
-	// valid type. When more types are added, they should have their variant in a
-	// new named type with Marshal and Unmarshal functions.
-	NullBlock
-)
-
 // Block is the base block structure, which can be extended for specific types
 type Block struct {
-	// Type is the type code - constants ending in Block, above
+	// Type is the type code
 	Type BlockType
 
 	// Time is a unix 64 bit timestamp in nanoseconds that can measure until 2262 AD.
