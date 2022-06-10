@@ -1,6 +1,11 @@
 // Package packet is a generic wrapper for containing messages that are most
-// likely blocks for kismet's proof of work chains,
-// used to enable generic processing of messages to recognise if they are known or not.
+// likely blocks for kismet's proof of work chains, used to enable generic
+// processing of messages to recognise if they are known or not.
+//
+// This will be used by the p2p system as a first step for decoding packets so
+// that potentially unknown but signed messages can be ignored while processing
+// known messages, essential for extensibility without forcing immediate
+// upgrade.
 package packet
 
 import (
