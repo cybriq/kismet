@@ -103,6 +103,9 @@ func benchmarkDivHash(reps int, b *testing.B) {
 // BenchmarkDivHash5-16                   1        1325919974 ns/op
 // PASS
 // ok      github.com/cybriq/kismet/pkg/proof      14.759s
+//
+// In order to render a reasonably integer number per second operations, 4
+// repetitions will be selected.
 
 func BenchmarkDivHash1(b *testing.B) { benchmarkDivHash(1, b) }
 func BenchmarkDivHash2(b *testing.B) { benchmarkDivHash(2, b) }
