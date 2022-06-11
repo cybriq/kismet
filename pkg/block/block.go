@@ -40,8 +40,10 @@ func (b *Block) GetBlock() *Block { return b }
 // SerialLen returns the length in bytes of the Marshal ed version
 func (b Block) SerialLen() int { return int(unsafe.Sizeof(b)) }
 
+const WireBlockLen = 2 + 8 + hash.HashLen*2 + ed25519.PublicKeySize
+
 // WireBlock is defined here as an array as this simplifies data validation
-type WireBlock [2 + 8 + hash.HashLen*2 + ed25519.PublicKeySize]byte
+type WireBlock [WireBlockLen]byte
 
 // Marshal returns the raw bytes for the wire format of the block
 func (b *Block) Marshal() (serial WireBlock, err error) {
@@ -83,6 +85,19 @@ func (b *Block) Serialize() (bytes []byte, err error) {
 	}
 
 	bytes = wb[:]
+	return
+}
+
+func ToWireBlock(b []byte) (wb WireBlock, err error) {
+	if len(b) != WireBlockLen {
+		err = fmt.Errorf(
+			"data length incorrect, got %d expected %d",
+			len(b), WireBlockLen,
+		)
+		return
+	}
+
+	copy(wb[:], b)
 	return
 }
 
