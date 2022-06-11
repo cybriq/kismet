@@ -41,9 +41,9 @@ func Blake3(bytes []byte) []byte {
 // integer mathematics function this forms the basis of the fairest possible
 // proof of work function that places miners on the flattest playing field
 // possible and pits their use of this hardware against almost all computer
-// systems applications is market competition. Long division performance is
-// almost linearly proportional to transistor count, which is almost linearly
-// proportional to relative cost.
+// systems applications in market competition, keeping the growth of hashrate
+// constrained. Long division performance is almost linearly proportional to
+// transistor count, which is almost linearly proportional to relative cost.
 func DivHash(blockBytes []byte, repetitions int) []byte {
 
 	if len(blockBytes) < 2 {

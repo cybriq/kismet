@@ -3,7 +3,6 @@ package proof
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/cybriq/kismet/pkg/block"
 	"github.com/cybriq/kismet/pkg/hash"
 	"testing"
 )
@@ -11,38 +10,38 @@ import (
 func TestDivHash(t *testing.T) {
 
 	expected := []string{
-		"526f5c1eb6df242199815cc2cbc8fa153e6989b7f81ae3999d22111c85b964b5",
-		"8779ac5320f8c8d90847af47d1dcb2366bb042f2ed8771743f985df02a206bd2",
-		"bc9eab0fbfe06c67eb593b0b4cd154366cd9939b607a273ed4e8f1ce75f039d0",
-		"8b1bcf1515fea74b5d1c4d2011b84d59bce37b8c7069607841a6f0cb550ec55a",
-		"02b702f93e07f627f28937a7c599af22e926e2ed5246b58d601356bc66a77d72",
-		"af96a09355ac4565b96adfd2d261b785b571edccc5adf1f671cf88ee566a997c",
-		"d8c39dceba14049ea8d24625a1acc1bfcb2ab762fbfebef6620f16ee27fe9afe",
-		"b85fa8c0be0acb5c2833fb87520229b5ff2e35c976f303930033a2f44a72d373",
-		"2b089828dcbd8fb1b3bd039f660ece6a73260bafe4d5f9580f402499f85c6e02",
-		"d8a0f7903dafed7c08e17d0d37e7e4b8410404c89ad4c6532a59b57effe42131",
-		"c28479415db2770820789a238edcfe1762d654887dbd51a4ee479715646a13c9",
-		"b6abab25b9d3371ce285e23221f57b88acb01f8fdb1765e44a3f452a9765ddb8",
-		"639d26ccd6524b748ccb828503b1b1d48cb5a3255fefb2bbb34c241b2c328417",
-		"5ac2821c4acc949b0b88e5b56e20e97b031d5f6532f08509cbb4cca21cb31f8d",
-		"43e8cb865fc99741153e152aeb3a82413b709707af1941049e264f45ed0c96b7",
-		"3603d6f8a9f90772c0a84fd592b870567fa3f33f479f9ca57e8a23524565e20e",
-		"e195ae36be365f91f2aa9ab34f9c94e2859c84bd02a232ede37ee8e5f6455151",
-		"df8905ff06291574fddf4aa1f648c584f554de3c98edaa15d6638e920af8e087",
-		"4d9e7bebb44ec86b9ffe9750683c49e8c3505a292dbdae085037a2d595760f48",
-		"7bc3fe9715f987272b843242822754bea912d817c528f9cbd5c86e325c59e13d",
-		"010b377631fe487dd17a6cdae069e1bb1f10d2d7c110c491ea743b54b911ea2b",
-		"c0c0464af7c239e450352de4e377efaed9b86be4a72a9fee30f5658339772db7",
-		"b4b20f92993bf543eaa2a030c6bda08e6160c857d767beb4805e04f51f85efe2",
-		"a315601df6766abebd802742b65e019b430074d8a03e914ec3c8e277497e54f2",
-		"7f68eef58e919f34858d87f6e22fb25a4a9e633a28026fadf99898363909a72c",
-		"e59e0c8449d1464c65d7f853d9daf9f7748cf353f6bcd7ccc69fc4128c174e3b",
-		"58f50ec5cc167b5ffd20ea2cad3bcf39ef89cf01d8ea3439ee74092561d0eda1",
-		"a62eba8572ef950729a5491c8ca3d8b8d19d1dd34296c0710f1aa0cbdb5f7f5f",
-		"aba9cd379b0287508c97cf64189bb51ddb8b6341c520045981dd986db3598feb",
-		"9c8366d52db5c1a507200fb728611b1ea9429a4ccd5c8078e71a9e24c363123e",
-		"c81c43cad276ae2521c822305d3d1e7badf414b2f85bccdb722db0d176837ea6",
-		"6e217044df9b43d4028221bd666e569f4b092c51bee603da3e6b09aff160d92f",
+		"84a5f89d2ef27b86c83bdd76e6dfd4cf7d35f4179ec89719559413896c95459a",
+		"0789b6358b631bcc3317d24520aaf83062a5fb70a83b6404e276fc015172dbb4",
+		"cb3acf43707850372cf2c60ccf99cf64fc21a620b368c91361426181ab527043",
+		"d83026157f2e25206fc5f09c5204aa67e3e589cc9aa7e9a691c60386c8e5ec3e",
+		"7e77d5bb63651ad674627b2d1deddd99a77b9bd8e6119679173b41dd823fce25",
+		"1082113ce80e7366c0acdc752527a974625a9db74d5758ecf12d5d91b57e366c",
+		"61276256fbdf8a397fc64237843813883b3d0bb7e9ed8d43eb64e8ba602d83fd",
+		"99c19dfe054c2845644628ef5d3a44aea911cf37f114ad3f4e6176739c19e35b",
+		"0df6361b8d345ad1ea739b2f7b58b00e362e342ab9251ad66f69c30aab4de2a7",
+		"42622f9e8814672f8ccee3cbbf43840b8ecafbfe378d017ce87b34fa70f61377",
+		"37ad9ed372439be9ed3708a6543f6ff318a0ed6f52f1d138cfe7fed5119329ac",
+		"a7dbca64c01da3cf87300f8ec248a8b209ebc749f3eb2c99f321a459d3f477c6",
+		"343d23784e7318c70bf32e0bfbac999ec790340763e6fb504268355beee09d8d",
+		"ffef48a3df0c032233f674c8c8b83d3e7e573ff99cf6f736143d2997bbdae4d9",
+		"d98bd9e2340ff87528ecb47cefdf9c3e6fae2a660167fc6438e6d813d8b24fa3",
+		"e5dd1af5bc41304d18d13297c10fded398d5cdeadcb0f96ba68ee3ae43f99cb2",
+		"a9e24d2589bce260a3ddf84949ffb02e8a6dc26cdc693411693869bb81def946",
+		"b6beec01cd58e8055164c23ff9fc468c583379487d2e18616f68a848a0021109",
+		"063d94131d3e86519aeac759cc2ae6f9b7ffd468edeecc82660d34f2a7ace019",
+		"ae98f1ac67a5213e1f7199eeedd7f0917797f63dda0d36933da69c10c3990193",
+		"266c6c0d9cfb73a41d94cb0ac5a48fbef5d83ec816917a1c307d9115f0511ebe",
+		"705f1187c42212e3683d420baa8a0c1c4678788f8024a10e0f3f9077e0a27f92",
+		"45941452fec84e10814f59df23512b7fcb012979856ec34af6e93fe439f38298",
+		"26e5093d569668ca9148537ea5a946e3edf43adc79557aa7e7d27c9ed3149095",
+		"253cdb3556fefa9c21462c9ac60e279780ca69297a9b63d8018515f6f273a103",
+		"e5623df4d1cbc89d0c92f647187eadf85d4d6b36bd87eba89a9ee0e754306b66",
+		"0b08f68d2efec39760e2b7f180c3ea707e758c9f9ad5027b8db0f8deac76a87f",
+		"a4ce35b109561ac93561b43ab35be401cf6dc471f2bdba355a30b6018be564a4",
+		"f1e340799d0b296335f31db7288cbbd6f04112da09f6cc4bcb9ec2d94f5e4ccc",
+		"91b41609f4492fa3e676be770a60cde43d91dc3d0a61e36954d942facda778c2",
+		"379f0c7ade26503bc12fff887e9a643a9744fa478ad0af6bc06f4abf8ea9dab2",
+		"ba9d0bc45add56a9818e27a5ad3cf4cc1afdfd9243656ee5808b67e04d907535",
 	}
 	o := "\n\texpected := []string{\n"
 	// Standard block size is 106 bytes for a validator block. If another hash is
@@ -51,14 +50,9 @@ func TestDivHash(t *testing.T) {
 	// per operation.
 	empty := Blake3([]byte{})
 	empty = append(empty, empty...)
-	empty = append(empty, empty[:hash.HashLen]...)
-	empty = append(empty, empty[:10]...)
+	empty = append(empty, empty[:hash.HashLen+10]...)
 	for i := 0; i < 32; i++ {
-		h := DivHash4(empty[:block.Block{}.SerialLen()])
-		empty = h
-		empty = append(empty, empty...)
-		empty = append(empty, empty[:hash.HashLen]...)
-		empty = append(empty, empty[:10]...)
+		h := DivHash4(empty)
 		expect, err := hex.DecodeString(expected[i])
 		if err != nil {
 			t.Fatalf("error decoding hex string '%s': %v", expected[i], err)
@@ -67,6 +61,9 @@ func TestDivHash(t *testing.T) {
 			t.Fatalf("")
 		}
 		o += fmt.Sprintf("\t\t\"%s\",\n", hex.EncodeToString(h))
+		empty = h
+		empty = append(empty, empty...)
+		empty = append(empty, empty[:hash.HashLen+10]...)
 	}
 	o += "\t}\n"
 	t.Log("generated:\n", o)
