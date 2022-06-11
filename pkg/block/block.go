@@ -2,10 +2,11 @@ package block
 
 import (
 	"fmt"
-	"github.com/cloudflare/circl/sign/ed25519"
+	"github.com/cybriq/kismet/pkg/ed25519"
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/kismet/pkg/known"
 	"github.com/cybriq/kismet/pkg/proof"
+	"unsafe"
 )
 
 // Block is the base block structure, which can be extended for specific types
@@ -37,7 +38,7 @@ type Block struct {
 func (b *Block) GetBlock() *Block { return b }
 
 // SerialLen returns the length in bytes of the Marshal ed version
-func (Block) SerialLen() int { return 2 + 8 + hash.HashLen*2 + ed25519.PublicKeySize }
+func (b Block) SerialLen() int { return int(unsafe.Sizeof(b)) }
 
 // WireBlock is defined here as an array as this simplifies data validation
 type WireBlock [2 + 8 + hash.HashLen*2 + ed25519.PublicKeySize]byte
@@ -67,7 +68,7 @@ func (b *Block) Marshal() (serial WireBlock, err error) {
 	// The rest are simple copy operations
 	copy(serial[10:hash.HashLen+10], b.Difficulty[:])
 	copy(serial[42:hash.HashLen+42], b.Previous[:])
-	copy(serial[74:ed25519.PublicKeySize+74], b.PublicKey)
+	copy(serial[74:ed25519.PublicKeySize+74], b.PublicKey[:])
 	return
 }
 
@@ -88,10 +89,6 @@ func (b *Block) Serialize() (bytes []byte, err error) {
 // Unmarshal the wire format bytes into a Block structure
 func Unmarshal(serial WireBlock) (b Block, err error) {
 
-	// We have to specify this because it is not an array. The rest are
-	// automatically allocated.
-	b.PublicKey = make([]byte, ed25519.PublicKeySize)
-
 	// again, just doing this directly is the fastest.
 	b.Type = known.Type(serial[0]) + known.Type(serial[1])<<8
 	b.Time = int64(serial[2]) +
@@ -106,7 +103,7 @@ func Unmarshal(serial WireBlock) (b Block, err error) {
 	// The hashes and keys are just copy operations
 	copy(b.Difficulty[:], serial[10:10+hash.HashLen])
 	copy(b.Previous[:], serial[42:hash.HashLen+42])
-	copy(b.PublicKey, serial[74:ed25519.PublicKeySize+74])
+	copy(b.PublicKey[:], serial[74:ed25519.PublicKeySize+74])
 	return
 }
 
