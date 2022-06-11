@@ -50,7 +50,7 @@ func TestDivHash(t *testing.T) {
 	// per operation.
 	empty := Blake3([]byte{})
 	empty = append(empty, empty...)
-	empty = append(empty, empty[:hash.HashLen+10]...)
+	empty = append(empty, empty[:hash.Len+10]...)
 	for i := 0; i < 32; i++ {
 		h := DivHash4(empty)
 		expect, err := hex.DecodeString(expected[i])
@@ -63,7 +63,7 @@ func TestDivHash(t *testing.T) {
 		o += fmt.Sprintf("\t\t\"%s\",\n", hex.EncodeToString(h))
 		empty = h
 		empty = append(empty, empty...)
-		empty = append(empty, empty[:hash.HashLen+10]...)
+		empty = append(empty, empty[:hash.Len+10]...)
 	}
 	o += "\t}\n"
 	t.Log("generated:\n", o)

@@ -40,7 +40,7 @@ func (b *Block) GetBlock() *Block { return b }
 // SerialLen returns the length in bytes of the Marshal ed version
 func (b Block) SerialLen() int { return int(unsafe.Sizeof(b)) }
 
-const WireBlockLen = 2 + 8 + hash.HashLen*2 + ed25519.PublicKeySize
+const WireBlockLen = 2 + 8 + hash.Len*2 + ed25519.PublicKeySize
 
 // WireBlock is defined here as an array as this simplifies data validation
 type WireBlock [WireBlockLen]byte
@@ -68,8 +68,8 @@ func (b *Block) Marshal() (serial WireBlock, err error) {
 	serial[9] = byte(b.Time >> 56)
 
 	// The rest are simple copy operations
-	copy(serial[10:hash.HashLen+10], b.Difficulty[:])
-	copy(serial[42:hash.HashLen+42], b.Previous[:])
+	copy(serial[10:hash.Len+10], b.Difficulty[:])
+	copy(serial[42:hash.Len+42], b.Previous[:])
 	copy(serial[74:ed25519.PublicKeySize+74], b.PublicKey[:])
 	return
 }
@@ -116,8 +116,8 @@ func (serial WireBlock) Unmarshal() (b Block) {
 		int64(serial[9])<<56
 
 	// The hashes and keys are just copy operations
-	copy(b.Difficulty[:], serial[10:10+hash.HashLen])
-	copy(b.Previous[:], serial[42:hash.HashLen+42])
+	copy(b.Difficulty[:], serial[10:10+hash.Len])
+	copy(b.Previous[:], serial[42:hash.Len+42])
 	copy(b.PublicKey[:], serial[74:ed25519.PublicKeySize+74])
 	return
 }
