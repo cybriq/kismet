@@ -87,7 +87,7 @@ func (b *Block) Serialize() (bytes []byte, err error) {
 }
 
 // Unmarshal the wire format bytes into a Block structure
-func Unmarshal(serial WireBlock) (b Block, err error) {
+func (serial WireBlock) Unmarshal() (b Block) {
 
 	// again, just doing this directly is the fastest.
 	b.Type = known.Type(serial[0]) + known.Type(serial[1])<<8
@@ -127,7 +127,7 @@ func (b *Block) Deserialize(bytes []byte) (err error) {
 	copy(wb[:], bytes)
 
 	// the assignment here is a copy operation that overwrites the existing Block
-	*b, err = Unmarshal(wb)
+	*b = wb.Unmarshal()
 	return
 }
 
