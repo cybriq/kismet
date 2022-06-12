@@ -2,5 +2,8 @@
 
 ## 2022-06-11
 
-- Created array based wrapper for ed25519 signatures to simplify sanitization of data sizes.
--
+-   Created array based wrapper for ed25519 signatures to simplify sanitization of data sizes.
+
+## 2022-06-12
+
+-   
