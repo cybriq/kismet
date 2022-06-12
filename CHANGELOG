@@ -7,3 +7,4 @@
 ## 2022-06-12
 
 -   Added version system from prior work
+-   Make use of our very nice logging library
