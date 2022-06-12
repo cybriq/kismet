@@ -8,3 +8,4 @@
 
 -   Added version system from prior work
 -   Make use of our very nice logging library
+-   Created block index with LRU cache map
