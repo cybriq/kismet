@@ -6,19 +6,37 @@ import (
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/qu"
 	"github.com/dgraph-io/badger/v3"
+	"sort"
+	"sync"
 	"time"
 )
 
 type AccessTrackedBlock struct {
+	hash.Hash
 	time.Time
 	*block.Block
+}
+
+type SortedAccess []AccessTrackedBlock
+
+func (a SortedAccess) Len() int {
+	return len(a)
+}
+
+func (a SortedAccess) Less(i, j int) bool {
+	return a[i].Time.Before(a[j].Time)
+}
+
+func (a SortedAccess) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
 }
 
 type Blocks map[hash.Hash]AccessTrackedBlock
 
 type Index struct {
-	db    *badger.DB
-	cache Blocks
+	db      *badger.DB
+	cache   Blocks
+	cacheMx sync.Mutex
 }
 
 type IndexBlock struct {
@@ -39,7 +57,10 @@ func (ib *IndexBlock) Previous() (b *IndexBlock, err error) {
 
 type Chain []IndexBlock
 
-func New(path string, maxToCache int, stop qu.C) (idx *Index, err error) {
+// New creates a new block index. maxToCache is the maximum we will cache as
+// recently used, and lowWaterMark is the number below maxToCache that a cache
+// purge will reduce the cache size to when it hits the max.
+func New(path string, maxToCache, lowWaterMark int, stop qu.C) (idx *Index, err error) {
 
 	idx = &Index{cache: make(Blocks)}
 
@@ -51,17 +72,44 @@ func New(path string, maxToCache int, stop qu.C) (idx *Index, err error) {
 	go func() {
 
 		timer := time.NewTicker(time.Minute)
+		var sa SortedAccess
 	out:
 		for {
 			select {
 			case <-timer.C:
+
+				idx.cacheMx.Lock()
 				if len(idx.cache) > maxToCache {
+					sa = make(SortedAccess, len(idx.cache))
+					var counter int
 					for i := range idx.cache {
-						_ = i
+						sa[counter] = idx.cache[i]
+						counter++
 					}
+				} else {
+
+					// unlock since we aren't accessing the cache
+					idx.cacheMx.Unlock()
+					break
 				}
 
+				// no need to hold lock while we sort our list
+				idx.cacheMx.Unlock()
+
+				sort.Sort(sa)
+				sal := len(sa)
+
+				idx.cacheMx.Lock()
+				for i := lowWaterMark; i < sal; i++ {
+					delete(idx.cache, sa[i].Hash)
+				}
+				idx.cacheMx.Unlock()
+
+				// hint to GC we don't need this temporary list anymore
+				sa = SortedAccess{}
+
 			case <-stop.Wait():
+
 				err = idx.db.Close()
 				log.E.Chk(err)
 				timer.Stop()
@@ -88,15 +136,18 @@ func (idx *Index) Add(b *block.Block) (err error) {
 	}
 
 	// check we are not adding the same block again
+	idx.cacheMx.Lock()
 	if _, found := idx.cache[h]; found {
 
 		err = fmt.Errorf(
 			"block already exists in cache, not adding as" +
 				" it has been seen/added already",
 		)
+		idx.cacheMx.Unlock()
 		log.E.Ln(err)
 		return
 	}
+	idx.cacheMx.Unlock()
 
 	// next, check if the block has already been stored in db but not recently
 	// accessed.
@@ -111,12 +162,16 @@ func (idx *Index) Add(b *block.Block) (err error) {
 		},
 	); log.E.Chk(err) {
 
+		idx.cacheMx.Lock()
 		idx.cache[h] = AccessTrackedBlock{Time: time.Now(), Block: b}
+		idx.cacheMx.Unlock()
 		return
 	}
 
 	// add the block to the cache for fast retrieval
+	idx.cacheMx.Lock()
 	idx.cache[h] = AccessTrackedBlock{Time: time.Now(), Block: b}
+	idx.cacheMx.Unlock()
 
 	var blk block.WireBlock
 	if blk, err = b.Marshal(); log.E.Chk(err) {
