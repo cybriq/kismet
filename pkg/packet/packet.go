@@ -31,6 +31,7 @@ func UnmarshalGeneric(pkt []byte) (typ uint16, bytes []byte, excess []byte, err 
 	pktSize, _ := binary.Varint(pkt[:8])
 	if int64(len(pkt)-8) < pktSize {
 		err = fmt.Errorf("packet length should be %d but %d bytes given", pktSize, len(pkt)-8)
+		log.E.Ln(err)
 		return
 	}
 	// This enables generic packaging of signed packets

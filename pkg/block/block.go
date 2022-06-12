@@ -51,6 +51,7 @@ func (b *Block) Marshal() (serial WireBlock, err error) {
 	if b == nil {
 		// It is programmer error if a nil pointer is passed
 		err = fmt.Errorf("cannot marshal nil Block")
+		log.E.Ln(err)
 		return
 	}
 
@@ -79,8 +80,7 @@ func (b *Block) Serialize() (bytes []byte, err error) {
 
 	var wb WireBlock
 
-	wb, err = b.Marshal()
-	if err != nil {
+	if wb, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
 
@@ -94,6 +94,7 @@ func ToWireBlock(b []byte) (wb WireBlock, err error) {
 			"data length incorrect, got %d expected %d",
 			len(b), WireBlockLen,
 		)
+		log.E.Ln(err)
 		return
 	}
 
@@ -128,6 +129,7 @@ func (b *Block) Deserialize(bytes []byte) (err error) {
 	if b == nil {
 
 		err = fmt.Errorf("cannot deserialize to a nil Block")
+		log.E.Ln(err)
 		return
 	}
 
@@ -137,6 +139,7 @@ func (b *Block) Deserialize(bytes []byte) (err error) {
 			"cannot deserialize %d bytes as a block is %d bytes long",
 			len(bytes), len(wb),
 		)
+		log.E.Ln(err)
 		return
 	}
 	copy(wb[:], bytes)
@@ -152,8 +155,7 @@ func (b *Block) Deserialize(bytes []byte) (err error) {
 func (b *Block) PoWHash() (h hash.Hash, err error) {
 
 	var bytes WireBlock
-	bytes, err = b.Marshal()
-	if err != nil {
+	if bytes, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
 
@@ -166,8 +168,7 @@ func (b *Block) PoWHash() (h hash.Hash, err error) {
 func (b *Block) IndexHash() (h hash.Hash, err error) {
 
 	var bytes WireBlock
-	bytes, err = b.Marshal()
-	if err != nil {
+	if bytes, err = b.Marshal(); log.E.Chk(err) {
 
 		return
 	}
