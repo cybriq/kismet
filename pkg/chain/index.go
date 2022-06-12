@@ -51,13 +51,20 @@ func New(path string, maxToCache int, stop qu.C) (idx *Index, err error) {
 	go func() {
 
 		timer := time.NewTicker(time.Minute)
-
 	out:
 		for {
 			select {
 			case <-timer.C:
-				// do gc here
+				if len(idx.cache) > maxToCache {
+					for i := range idx.cache {
+						_ = i
+					}
+				}
+
 			case <-stop.Wait():
+				err = idx.db.Close()
+				log.E.Chk(err)
+				timer.Stop()
 				break out
 			}
 		}
