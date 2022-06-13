@@ -1,4 +1,5 @@
 ![logo](doc/logoshadow.svg)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_shield)
 
 # κισμέτ
 
@@ -25,3 +26,7 @@ Kismet separates leadership selection from consensus by creating a separate chai
 ## Building
 
 todo: make a thing that can be built
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_large)
