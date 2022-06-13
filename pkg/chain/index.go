@@ -12,24 +12,6 @@ type Index struct {
 	db *badger.DB
 }
 
-type IndexBlock struct {
-	*Index
-	*block.Block
-}
-
-func (ib *IndexBlock) Previous() (b *IndexBlock, err error) {
-
-	var byHash *block.Block
-	if byHash, err = ib.GetByHash(ib.Block.Previous); log.E.Chk(err) {
-		return
-	}
-
-	b = &IndexBlock{Index: ib.Index, Block: byHash}
-	return
-}
-
-type Chain []IndexBlock
-
 // New creates a new block index. maxToCache is the maximum we will cache as
 // recently used, and lowWaterMark is the number below maxToCache that a cache
 // purge will reduce the cache size to when it hits the max.
@@ -131,12 +113,11 @@ func (idx *Index) GetByHash(h hash.Hash) (b *block.Block, err error) {
 	return
 }
 
-func (idx *Index) GetByHeight(h int) (b *block.Block) {
+func (idx *Index) updateHead() {
 
-	return
 }
 
-func (idx *Index) GetBestChain() (bestChain Chain) {
+func (idx *Index) GetByHeight(h int) (b *block.Block) {
 
 	return
 }
