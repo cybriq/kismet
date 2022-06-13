@@ -55,6 +55,7 @@ func New(path string, stop qu.C) (idx *Index, err error) {
 	return
 }
 
+// Add a new block to the index
 func (idx *Index) Add(b *block.Block) (err error) {
 
 	if b == nil {
@@ -73,7 +74,6 @@ func (idx *Index) Add(b *block.Block) (err error) {
 		func(txn *badger.Txn) (err error) {
 
 			if _, err = txn.Get(h[:]); err == nil {
-
 				return fmt.Errorf("block already exists, not adding again")
 			}
 			return
@@ -88,22 +88,21 @@ func (idx *Index) Add(b *block.Block) (err error) {
 		return
 	}
 
-	if err = idx.db.Update(
-		func(txn *badger.Txn) error {
-			return txn.Set(h[:], blk[:])
-		},
-	); log.E.Chk(err) {
-		return err
-	}
+	err = idx.db.Update(func(txn *badger.Txn) error { return txn.Set(h[:], blk[:]) })
+	log.E.Chk(err)
 
 	return
 }
 
+// Delete a block from the database (for the case of as yet not defined pruning regime)
 func (idx *Index) Delete(h hash.Hash) (err error) {
 
+	err = idx.db.Update(func(txn *badger.Txn) (err error) { return txn.Delete(h[:]) })
+	log.E.Chk(err)
 	return
 }
 
+// GetByHash returns a block given its IndexHash
 func (idx *Index) GetByHash(h hash.Hash) (b *block.Block, err error) {
 
 	var blk []byte
