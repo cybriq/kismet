@@ -40,7 +40,7 @@ type Index struct {
 }
 
 type IndexBlock struct {
-	Index
+	*Index
 	*block.Block
 }
 
