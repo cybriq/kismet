@@ -1,7 +1,8 @@
-package chain
+package blocks
 
 import (
 	"fmt"
+
 	"github.com/cybriq/kismet/pkg/block"
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/qu"
@@ -9,7 +10,7 @@ import (
 )
 
 type Index struct {
-	db *badger.DB
+	*badger.DB
 }
 
 // New creates a new block index. maxToCache is the maximum we will cache as
@@ -19,7 +20,7 @@ func New(path string, stop qu.C) (idx *Index, err error) {
 
 	idx = &Index{}
 
-	if idx.db, err = badger.Open(badger.DefaultOptions(path)); log.E.Chk(err) {
+	if idx.DB, err = badger.Open(badger.DefaultOptions(path)); log.E.Chk(err) {
 		return
 	}
 
@@ -29,11 +30,12 @@ func New(path string, stop qu.C) (idx *Index, err error) {
 		select {
 		case <-stop.Wait():
 
-			err = idx.db.Close()
+			err = idx.DB.Close()
 			log.E.Chk(err)
 			break out
 		}
 	}()
+
 	return
 }
 
@@ -52,7 +54,7 @@ func (idx *Index) Add(b *block.Block) (err error) {
 		return
 	}
 
-	if err = idx.db.View(
+	if err = idx.DB.View(
 		func(txn *badger.Txn) (err error) {
 
 			if _, err = txn.Get(h[:]); err == nil {
@@ -65,12 +67,14 @@ func (idx *Index) Add(b *block.Block) (err error) {
 		return
 	}
 
-	var blk block.WireBlock
+	var blk []byte
 	if blk, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
 
-	err = idx.db.Update(func(txn *badger.Txn) error { return txn.Set(h[:], blk[:]) })
+	err = idx.DB.Update(func(txn *badger.Txn) error {
+		return txn.Set(h[:], blk[:])
+	})
 	log.E.Chk(err)
 
 	return
@@ -79,7 +83,9 @@ func (idx *Index) Add(b *block.Block) (err error) {
 // Delete a block from the database (for the case of as yet not defined pruning regime)
 func (idx *Index) Delete(h hash.Hash) (err error) {
 
-	err = idx.db.Update(func(txn *badger.Txn) (err error) { return txn.Delete(h[:]) })
+	err = idx.DB.Update(func(txn *badger.Txn) (err error) {
+		return txn.Delete(h[:])
+	})
 	log.E.Chk(err)
 	return
 }
@@ -90,7 +96,7 @@ func (idx *Index) GetByHash(h hash.Hash) (b *block.Block, err error) {
 	var blk []byte
 
 	key := h[:]
-	if err = idx.db.View(
+	if err = idx.DB.View(
 		func(txn *badger.Txn) (err error) {
 			var item *badger.Item
 			if item, err = txn.Get(key); log.E.Chk(err) {
@@ -104,25 +110,7 @@ func (idx *Index) GetByHash(h hash.Hash) (b *block.Block, err error) {
 		return
 	}
 
-	var wireBlock block.WireBlock
-	if wireBlock, err = block.ToWireBlock(blk); log.E.Chk(err) {
-		return nil, err
-	}
-	rb := wireBlock.Unmarshal()
-	b = &rb
-	return
-}
-
-func (idx *Index) updateHead() {
-
-}
-
-func (idx *Index) GetByHeight(h int) (b *block.Block) {
-
-	return
-}
-
-func (idx *Index) Head() (b *block.Block) {
-
+	err = b.Unmarshal(blk)
+	log.E.Chk(err)
 	return
 }

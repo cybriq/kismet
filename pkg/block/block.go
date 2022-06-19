@@ -2,11 +2,13 @@ package block
 
 import (
 	"fmt"
+	"unsafe"
+
+	"github.com/cybriq/kismet/pkg/blockinterface"
 	"github.com/cybriq/kismet/pkg/ed25519"
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/kismet/pkg/known"
 	"github.com/cybriq/kismet/pkg/proof"
-	"unsafe"
 )
 
 // Block is the base block structure, which can be extended for specific types
@@ -32,21 +34,11 @@ type Block struct {
 	ed25519.PublicKey
 }
 
-// GetBlock does nothing interesting in this implementation, but in derived,
-// extended block formats with extra fields, this would return the embedded
-// Block that is extended from.
-func (b *Block) GetBlock() *Block { return b }
+var _ block.Interface = &Block{}
 
-// SerialLen returns the length in bytes of the Marshal ed version
-func (b Block) SerialLen() int { return int(unsafe.Sizeof(b)) }
+const Name = "kismet.Block"
 
-const WireBlockLen = 2 + 8 + hash.Len*2 + ed25519.PublicKeySize
-
-// WireBlock is defined here as an array as this simplifies data validation
-type WireBlock [WireBlockLen]byte
-
-// Marshal returns the raw bytes for the wire format of the block
-func (b *Block) Marshal() (serial WireBlock, err error) {
+func (b *Block) Marshal() (bytes []byte, err error) {
 
 	if b == nil {
 		// It is programmer error if a nil pointer is passed
@@ -55,106 +47,71 @@ func (b *Block) Marshal() (serial WireBlock, err error) {
 		return
 	}
 
+	bytes = make([]byte, b.Length())
+
 	// There is functions to do these but that would be slower than doing this
 	// directly with the integers
-	serial[0] = byte(b.Type)
-	serial[1] = byte(b.Type >> 8)
-	serial[2] = byte(b.Time)
-	serial[3] = byte(b.Time >> 8)
-	serial[4] = byte(b.Time >> 16)
-	serial[5] = byte(b.Time >> 24)
-	serial[6] = byte(b.Time >> 32)
-	serial[7] = byte(b.Time >> 40)
-	serial[8] = byte(b.Time >> 48)
-	serial[9] = byte(b.Time >> 56)
+	bytes[0] = byte(b.Type)
+	bytes[1] = byte(b.Type >> 8)
+	bytes[2] = byte(b.Time)
+	bytes[3] = byte(b.Time >> 8)
+	bytes[4] = byte(b.Time >> 16)
+	bytes[5] = byte(b.Time >> 24)
+	bytes[6] = byte(b.Time >> 32)
+	bytes[7] = byte(b.Time >> 40)
+	bytes[8] = byte(b.Time >> 48)
+	bytes[9] = byte(b.Time >> 56)
 
 	// The rest are simple copy operations
-	copy(serial[10:hash.Len+10], b.Difficulty[:])
-	copy(serial[42:hash.Len+42], b.Previous[:])
-	copy(serial[74:ed25519.PublicKeySize+74], b.PublicKey[:])
+	copy(bytes[10:hash.Len+10], b.Difficulty[:])
+	copy(bytes[42:hash.Len+42], b.Previous[:])
+	copy(bytes[74:ed25519.PublicKeySize+74], b.PublicKey[:])
 	return
+
 }
 
-// Serialize renders our block into wire/storage format
-func (b *Block) Serialize() (bytes []byte, err error) {
+func (b *Block) Unmarshal(bytes []byte) (err error) {
 
-	var wb WireBlock
-
-	if wb, err = b.Marshal(); log.E.Chk(err) {
-		return
-	}
-
-	bytes = wb[:]
-	return
-}
-
-func ToWireBlock(b []byte) (wb WireBlock, err error) {
-	if len(b) != WireBlockLen {
+	if len(bytes) != b.Length() {
 		err = fmt.Errorf(
 			"data length incorrect, got %d expected %d",
-			len(b), WireBlockLen,
+			len(bytes), b.Length(),
 		)
 		log.E.Ln(err)
 		return
 	}
 
-	copy(wb[:], b)
-	return
-}
-
-// Unmarshal the wire format bytes into a Block structure
-func (serial WireBlock) Unmarshal() (b Block) {
+	*b = Block{}
 
 	// again, just doing this directly is the fastest.
-	b.Type = known.Type(serial[0]) + known.Type(serial[1])<<8
-	b.Time = int64(serial[2]) +
-		int64(serial[3])<<8 +
-		int64(serial[4])<<16 +
-		int64(serial[5])<<24 +
-		int64(serial[6])<<32 +
-		int64(serial[7])<<40 +
-		int64(serial[8])<<48 +
-		int64(serial[9])<<56
+	b.Type = known.Type(bytes[0]) + known.Type(bytes[1])<<8
+	b.Time = int64(bytes[2]) +
+		int64(bytes[3])<<8 +
+		int64(bytes[4])<<16 +
+		int64(bytes[5])<<24 +
+		int64(bytes[6])<<32 +
+		int64(bytes[7])<<40 +
+		int64(bytes[8])<<48 +
+		int64(bytes[9])<<56
 
 	// The hashes and keys are just copy operations
-	copy(b.Difficulty[:], serial[10:10+hash.Len])
-	copy(b.Previous[:], serial[42:hash.Len+42])
-	copy(b.PublicKey[:], serial[74:ed25519.PublicKeySize+74])
+	copy(b.Difficulty[:], bytes[10:10+hash.Len])
+	copy(b.Previous[:], bytes[42:hash.Len+42])
+	copy(b.PublicKey[:], bytes[74:ed25519.PublicKeySize+74])
+
 	return
 }
 
-// Deserialize unpacks a serialized form of the block into the value referred to by the pointer
-func (b *Block) Deserialize(bytes []byte) (err error) {
+func (b *Block) Length() (l int) { return int(unsafe.Sizeof(b)) }
 
-	if b == nil {
-
-		err = fmt.Errorf("cannot deserialize to a nil Block")
-		log.E.Ln(err)
-		return
-	}
-
-	var wb WireBlock
-	if len(bytes) != len(wb) {
-		err = fmt.Errorf(
-			"cannot deserialize %d bytes as a block is %d bytes long",
-			len(bytes), len(wb),
-		)
-		log.E.Ln(err)
-		return
-	}
-	copy(wb[:], bytes)
-
-	// the assignment here is a copy operation that overwrites the existing Block
-	*b = wb.Unmarshal()
-	return
-}
+func (b *Block) ID() string { return Name }
 
 // PoWHash returns the Proof of Work hash for a given block. We would not use
 // this function in a miner because only the timestamp and previous needs to be
 // changed between attempts, and would be faster to directly change the bytes.
 func (b *Block) PoWHash() (h hash.Hash, err error) {
 
-	var bytes WireBlock
+	var bytes []byte
 	if bytes, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
@@ -167,12 +124,17 @@ func (b *Block) PoWHash() (h hash.Hash, err error) {
 // far faster to calculate than the PoWHash.
 func (b *Block) IndexHash() (h hash.Hash, err error) {
 
-	var bytes WireBlock
+	var bytes []byte
 	if bytes, err = b.Marshal(); log.E.Chk(err) {
 
 		return
 	}
 
-	copy(h[:], proof.Blake3(bytes[:]))
+	copy(h[:], proof.Blake3(bytes))
 	return
 }
+
+// GetBlock does nothing interesting in this implementation, but in derived,
+// extended block formats with extra fields, this would return the embedded
+// Block that is extended from.
+func (b *Block) GetBlock() *Block { return b }
