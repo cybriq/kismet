@@ -34,7 +34,7 @@ type Block struct {
 	ed25519.PublicKey
 }
 
-var _ block.Interface = &Block{}
+var _ block.Blocker = &Block{}
 
 const Name = "kismet.Block"
 
