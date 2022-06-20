@@ -13,9 +13,7 @@ type Index struct {
 	*badger.DB
 }
 
-// New creates a new block index. maxToCache is the maximum we will cache as
-// recently used, and lowWaterMark is the number below maxToCache that a cache
-// purge will reduce the cache size to when it hits the max.
+// New creates a new block index.
 func New(path string, stop qu.C) (idx *Index, err error) {
 
 	idx = &Index{}

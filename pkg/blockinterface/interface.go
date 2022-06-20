@@ -1,4 +1,4 @@
-package block
+package blockinterface
 
 import (
 	"github.com/cybriq/kismet/pkg/block"

@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/cybriq/kismet/pkg/blockinterface"
+	"github.com/cybriq/kismet/pkg/bytes"
 	"github.com/cybriq/kismet/pkg/ed25519"
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/kismet/pkg/known"
@@ -29,16 +30,15 @@ type Block struct {
 	// and Congress tokens, the last element is the IPFS hash of the proposal
 	Previous hash.Hash
 
-	// PublicKey is in fact always 256 bits/32 bytes long but
-	// github.com/cloudflare/circl implementation does not use an array
+	// PublicKey is the identity that can sign for this block
 	ed25519.PublicKey
 }
 
-var _ block.Blocker = &Block{}
+var _ blockinterface.Blocker = &Block{}
 
 const Name = "kismet.Block"
 
-func (b *Block) Marshal() (bytes []byte, err error) {
+func (b *Block) Marshal() (by []byte, err error) {
 
 	if b == nil {
 		// It is programmer error if a nil pointer is passed
@@ -47,35 +47,28 @@ func (b *Block) Marshal() (bytes []byte, err error) {
 		return
 	}
 
-	bytes = make([]byte, b.Length())
+	by = make([]byte, b.Length())
 
 	// There is functions to do these but that would be slower than doing this
 	// directly with the integers
-	bytes[0] = byte(b.Type)
-	bytes[1] = byte(b.Type >> 8)
-	bytes[2] = byte(b.Time)
-	bytes[3] = byte(b.Time >> 8)
-	bytes[4] = byte(b.Time >> 16)
-	bytes[5] = byte(b.Time >> 24)
-	bytes[6] = byte(b.Time >> 32)
-	bytes[7] = byte(b.Time >> 40)
-	bytes[8] = byte(b.Time >> 48)
-	bytes[9] = byte(b.Time >> 56)
+	by[0] = byte(b.Type)
+	by[1] = byte(b.Type >> 8)
+	copy(by[2:10], bytes.FromInt64(b.Time))
 
 	// The rest are simple copy operations
-	copy(bytes[10:hash.Len+10], b.Difficulty[:])
-	copy(bytes[42:hash.Len+42], b.Previous[:])
-	copy(bytes[74:ed25519.PublicKeySize+74], b.PublicKey[:])
+	copy(by[10:hash.Len+10], b.Difficulty[:])
+	copy(by[42:hash.Len+42], b.Previous[:])
+	copy(by[74:ed25519.PublicKeySize+74], b.PublicKey[:])
 	return
 
 }
 
-func (b *Block) Unmarshal(bytes []byte) (err error) {
+func (b *Block) Unmarshal(by []byte) (err error) {
 
-	if len(bytes) != b.Length() {
+	if len(by) != b.Length() {
 		err = fmt.Errorf(
 			"data length incorrect, got %d expected %d",
-			len(bytes), b.Length(),
+			len(by), b.Length(),
 		)
 		log.E.Ln(err)
 		return
@@ -84,20 +77,13 @@ func (b *Block) Unmarshal(bytes []byte) (err error) {
 	*b = Block{}
 
 	// again, just doing this directly is the fastest.
-	b.Type = known.Type(bytes[0]) + known.Type(bytes[1])<<8
-	b.Time = int64(bytes[2]) +
-		int64(bytes[3])<<8 +
-		int64(bytes[4])<<16 +
-		int64(bytes[5])<<24 +
-		int64(bytes[6])<<32 +
-		int64(bytes[7])<<40 +
-		int64(bytes[8])<<48 +
-		int64(bytes[9])<<56
+	b.Type = known.Type(by[0]) + known.Type(by[1])<<8
+	b.Time = bytes.ToInt64(by[2:10])
 
 	// The hashes and keys are just copy operations
-	copy(b.Difficulty[:], bytes[10:10+hash.Len])
-	copy(b.Previous[:], bytes[42:hash.Len+42])
-	copy(b.PublicKey[:], bytes[74:ed25519.PublicKeySize+74])
+	copy(b.Difficulty[:], by[10:10+hash.Len])
+	copy(b.Previous[:], by[42:hash.Len+42])
+	copy(b.PublicKey[:], by[74:ed25519.PublicKeySize+74])
 
 	return
 }
