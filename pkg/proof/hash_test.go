@@ -3,8 +3,9 @@ package proof
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/cybriq/kismet/pkg/hash"
 	"testing"
+
+	"github.com/cybriq/kismet/pkg/hash"
 )
 
 func TestDivHash(t *testing.T) {

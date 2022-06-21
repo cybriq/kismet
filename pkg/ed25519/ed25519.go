@@ -4,8 +4,9 @@ package ed25519
 
 import (
 	"fmt"
-	ed "golang.org/x/crypto/ed25519"
 	"io"
+
+	ed "golang.org/x/crypto/ed25519"
 )
 
 // PublicKeySize is the size in bytes of a PublicKey
@@ -90,7 +91,8 @@ func (pk PublicKey) Verify(message []byte, sig Signature) bool {
 func ToSignature(s []byte) (sig Signature, err error) {
 
 	if len(s) != ed.SignatureSize {
-		err = fmt.Errorf("incorrect signature size, got %d expected %d", len(s), ed.SignatureSize)
+		err = fmt.Errorf("incorrect signature size, got %d expected %d", len(s),
+			ed.SignatureSize)
 		log.E.Ln(err)
 		return
 	}

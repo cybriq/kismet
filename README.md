@@ -27,6 +27,8 @@ Kismet separates leadership selection from consensus by creating a separate chai
 
 todo: make a thing that can be built
 
+## Licence
 
-## License
+Unlicenced, but maybe using things that aren't.
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_large)

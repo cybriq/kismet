@@ -21,7 +21,12 @@ import (
 // The excess field would usually contain a signature, thus enabling the generic
 // processing of signed packets where unknown types can be expected to have a
 // signature that must be valid.
-func UnmarshalGeneric(pkt []byte) (typ uint16, bytes []byte, excess []byte, err error) {
+func UnmarshalGeneric(pkt []byte) (
+	typ uint16,
+	bytes []byte,
+	excess []byte,
+	err error,
+) {
 
 	if len(pkt) < 10 {
 		err = fmt.Errorf("packet does not contain length and type")
@@ -30,7 +35,8 @@ func UnmarshalGeneric(pkt []byte) (typ uint16, bytes []byte, excess []byte, err 
 
 	pktSize, _ := binary.Varint(pkt[:8])
 	if int64(len(pkt)-8) < pktSize {
-		err = fmt.Errorf("packet length should be %d but %d bytes given", pktSize, len(pkt)-8)
+		err = fmt.Errorf("packet length should be %d but %d bytes given",
+			pktSize, len(pkt)-8)
 		log.E.Ln(err)
 		return
 	}

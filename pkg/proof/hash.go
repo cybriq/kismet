@@ -1,8 +1,9 @@
 package proof
 
 import (
-	"lukechampine.com/blake3"
 	"math/big"
+
+	"lukechampine.com/blake3"
 )
 
 func reverse(b []byte) []byte {
@@ -73,7 +74,8 @@ func DivHash(blockBytes []byte, repetitions int) []byte {
 	squareFirstHalf := firstHalfInt.Mul(firstHalfInt, firstHalfInt)
 	squareSecondHalf := secondHalfInt.Mul(secondHalfInt, secondHalfInt)
 	productOfSquares := firstHalfInt.Mul(squareFirstHalf, squareSecondHalf)
-	productDividedByBlockInt := productOfSquares.Div(productOfSquares, reversedBlockInt)
+	productDividedByBlockInt := productOfSquares.Div(productOfSquares,
+		reversedBlockInt)
 	ddd := productDividedByBlockInt.Bytes()
 
 	// Scramble the product by hashing progressively shorter segments to produce a
