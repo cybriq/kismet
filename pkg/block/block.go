@@ -2,7 +2,7 @@ package block
 
 import (
 	"fmt"
-	"unsafe"
+	"reflect"
 
 	"github.com/cybriq/kismet/pkg/blockinterface"
 	"github.com/cybriq/kismet/pkg/bytes"
@@ -36,7 +36,9 @@ type Block struct {
 
 var _ blockinterface.Blocker = &Block{}
 
-const Name = "kismet.Block"
+var Name = reflect.TypeOf(Block{}).Name()
+
+const Length = 2 + 8 + hash.Len + hash.Len + ed25519.PublicKeySize
 
 func (b *Block) Marshal() (by []byte, err error) {
 
@@ -49,8 +51,6 @@ func (b *Block) Marshal() (by []byte, err error) {
 
 	by = make([]byte, b.Length())
 
-	// There is functions to do these but that would be slower than doing this
-	// directly with the integers
 	by[0] = byte(b.Type)
 	by[1] = byte(b.Type >> 8)
 	copy(by[2:10], bytes.FromInt64(b.Time))
@@ -88,7 +88,7 @@ func (b *Block) Unmarshal(by []byte) (err error) {
 	return
 }
 
-func (b *Block) Length() (l int) { return int(unsafe.Sizeof(b)) }
+func (b *Block) Length() (l int) { return Length }
 
 func (b *Block) ID() string { return Name }
 
@@ -97,12 +97,12 @@ func (b *Block) ID() string { return Name }
 // changed between attempts, and would be faster to directly change the bytes.
 func (b *Block) PoWHash() (h hash.Hash, err error) {
 
-	var bytes []byte
-	if bytes, err = b.Marshal(); log.E.Chk(err) {
+	var by []byte
+	if by, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
 
-	copy(h[:], proof.DivHash4(bytes[:]))
+	copy(h[:], proof.DivHash4(by[:]))
 	return
 }
 
@@ -110,13 +110,13 @@ func (b *Block) PoWHash() (h hash.Hash, err error) {
 // far faster to calculate than the PoWHash.
 func (b *Block) IndexHash() (h hash.Hash, err error) {
 
-	var bytes []byte
-	if bytes, err = b.Marshal(); log.E.Chk(err) {
+	var by []byte
+	if by, err = b.Marshal(); log.E.Chk(err) {
 
 		return
 	}
 
-	copy(h[:], proof.Blake3(bytes))
+	copy(h[:], proof.Blake3(by))
 	return
 }
 
