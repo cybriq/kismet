@@ -10,6 +10,7 @@ import (
 	"github.com/cybriq/kismet/pkg/hash"
 	"github.com/cybriq/kismet/pkg/known"
 	"github.com/cybriq/kismet/pkg/proof"
+	"lukechampine.com/blake3"
 )
 
 // Block is the base block structure, which can be extended for specific types
@@ -95,14 +96,14 @@ func (b *Block) ID() string { return Name }
 // PoWHash returns the Proof of Work hash for a given block. We would not use
 // this function in a miner because only the timestamp and previous needs to be
 // changed between attempts, and would be faster to directly change the bytes.
-func (b *Block) PoWHash() (h hash.Hash, err error) {
+func (b *Block) PoWHash() (h []byte, err error) {
 
 	var by []byte
 	if by, err = b.Marshal(); log.E.Chk(err) {
 		return
 	}
 
-	copy(h[:], proof.DivHash4(by[:]))
+	h = proof.DivHash4(by[:])
 	return
 }
 
@@ -116,7 +117,7 @@ func (b *Block) IndexHash() (h hash.Hash, err error) {
 		return
 	}
 
-	copy(h[:], proof.Blake3(by))
+	h = blake3.Sum256(by[:])
 	return
 }
 

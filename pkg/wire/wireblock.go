@@ -5,19 +5,26 @@ package wire
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/cybriq/kismet/pkg/block"
+	"github.com/cybriq/kismet/pkg/blockinterface"
 	"github.com/cybriq/kismet/pkg/ed25519"
 	"github.com/cybriq/kismet/pkg/hash"
+	"github.com/cybriq/kismet/pkg/proof"
+	"lukechampine.com/blake3"
 )
 
 // Block is an array so that size and bounds checks are automatically
 // handled, to hash it must be converted using FromWireBlock
 type Block [block.Length]byte
 
-// ToWireBlock converts the bytes from block.Marshal into the Block array
-func ToWireBlock(by []byte) (b *Block, err error) {
+var _ blockinterface.Blocker = Block{}
+var Name = reflect.TypeOf(Block{}).Name()
+
+// Unmarshal converts the bytes from block.Marshal into the Block array
+func (b Block) Unmarshal(by []byte) (err error) {
 
 	if len(by) != block.Length {
 		err = fmt.Errorf("cannot convert block: incorrect byte length: "+
@@ -26,14 +33,13 @@ func ToWireBlock(by []byte) (b *Block, err error) {
 		return
 	}
 
-	b = &Block{}
 	copy(b[:], by)
 
 	return
 }
 
 // UpdateTime sets the block's Time field to the current time
-func (b *Block) UpdateTime() {
+func (b Block) UpdateTime() {
 	t := time.Now().UnixNano()
 	b[2] = byte(t)
 	b[3] = byte(t >> 8)
@@ -45,15 +51,30 @@ func (b *Block) UpdateTime() {
 	b[9] = byte(t >> 56)
 }
 
-// SetDifficulty sets the block.Block.Difficulty for the block
-func (b *Block) SetDifficulty(d hash.Hash) { copy(b[10:42], d[:]) }
+func (b Block) SetDifficulty(d hash.Hash)        { copy(b[10:42], d[:]) }
+func (b Block) SetPrevious(p hash.Hash)          { copy(b[42:74], p[:]) }
+func (b Block) SetPublicKey(k ed25519.PublicKey) { copy(b[74:106], k[:]) }
+func (b Block) Length() (l int)                  { return block.Length }
+func (b Block) ID() string                       { return Name }
+func (b Block) Marshal() ([]byte, error)         { return b[:], nil }
 
-// SetPrevious changes the block.Block.Previous field
-func (b *Block) SetPrevious(p hash.Hash) { copy(b[42:74], p[:]) }
+func (b Block) PoWHash() (h []byte, err error) {
 
-// SetPublicKey changes the block.Block.PublicKey field
-func (b *Block) SetPublicKey(k ed25519.PublicKey) { copy(b[74:106], k[:]) }
+	h = proof.DivHash4(b[:])
+	return
+}
 
-// FromWireBlock slices the array back to []byte for use with hash functions
-// and network sends.
-func (b *Block) FromWireBlock() []byte { return b[:] }
+func (b Block) IndexHash() (h hash.Hash, err error) {
+
+	h = blake3.Sum256(b[:])
+	return
+
+}
+
+func (b Block) GetBlock() (bl *block.Block) {
+
+	// this function only fails with wrong size and size is always correct
+	// for array
+	_ = bl.Unmarshal(b[:])
+	return
+}

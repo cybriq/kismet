@@ -10,7 +10,7 @@ import (
 // their wire and in memory formats.
 type Blocker interface {
 	marshal.Marshaler
-	PoWHash() (h hash.Hash, err error)
+	PoWHash() (h []byte, err error)
 	IndexHash() (h hash.Hash, err error)
 	GetBlock() *block.Block
 }
