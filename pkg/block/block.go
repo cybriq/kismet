@@ -61,7 +61,6 @@ func (b *Block) Marshal() (by []byte, err error) {
 	copy(by[42:hash.Len+42], b.Previous[:])
 	copy(by[74:ed25519.PublicKeySize+74], b.PublicKey[:])
 	return
-
 }
 
 func (b *Block) Unmarshal(by []byte) (err error) {
@@ -85,7 +84,6 @@ func (b *Block) Unmarshal(by []byte) (err error) {
 	copy(b.Difficulty[:], by[10:10+hash.Len])
 	copy(b.Previous[:], by[42:hash.Len+42])
 	copy(b.PublicKey[:], by[74:ed25519.PublicKeySize+74])
-
 	return
 }
 
