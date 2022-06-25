@@ -18,7 +18,7 @@ Underpinning both models is the idea of distributing risk amongst a group of ent
 
 Proof of Stake chains sacrifice the breadth of this hedge against corruption for fast processing. Proof of Work sacrifices regular processing times for a broader hedge against corruption.
 
-1. ## Proof of Work for Leadership with Classical Consensus
+## Proof of Work for Leadership with Classical Consensus
 
 What Kismet proposes is creating a chain purely for recording the winners of a Proof of Work lottery for various leadership roles, and accumulating these ahead of time to produce a future queue of validators for a classical consensus based on Tendermint's variant of the Practical Byzantine Fault Tolerance protocol.
 
@@ -34,48 +34,30 @@ The problem gets even more acute in the context of Decentralised Finance, where 
 
 Leadership in distributed systems quite simply becomes more and more vulnerable to gaming the less randomly it is given out.
 
-2.   ## Long Term Veto Power Balanced by Forking Power
+## Block Rewards
 
-The second big vulnerability of blockchain financial ledgers is another rather popular feature in many new projects, commonly called "governance". This power is likewise distributed to those with the biggest stakes, and enables arbitrary changes in the protocol to be "mandated". 
+Block rewards will be issued on an exponential decay basis, and will continue until the block reward rounds down to zero, at which point it will just be zero. This will aim at around 25 years until zero. After this transaction fees will be the sole means of rewarding miner/validators.
 
-Kismet has a mineable token for creating proposals, as well as mining for voting slots to vote on proposals once these proposals have been spent. However, such proposals can involve decisions that can corrupt the security of the protocol.
+## Lightning Network Interoperability
 
-The first rule of democracy is that if you change the voting rules you can manipulate the appearance of legitimacy.
+Blocks will be limited to a smaller size than normally used with Tendermint Consensus as we intend to implement Lightning style offchain transactions and keep the chain small enough that the pool of miner/validators can remain large.
 
-In order to defend against this, there is a role granted to one individual, who can delegate this task of sentinel for governance, and the only power this role has is to stop governance proposals from being passed.
+In order to eliminate the need to alter this, the block size limit will slowly grow with time in concert with the reduction in block reward, and continue to grow at this rate. This rate will be chosen based on the historical trend of the equal cost for a given amount of storage. Something like doubling every 4 years.
 
-It is a founding statement of the Kismet project that there is two legitimate uses for this veto, one is changing the token emission rate, and the second is changing the rule about the existence of this permanent, succession based role holding the veto power. It would not be legitimate to somewhat expand the number of individuals with such veto power but dividing their power would be illegitimate.
+Bitcoin compatible UXTO transaction scripting will be used in order to have direct interoperability with Lightning protocol. Lightning functionality should be implemented as soon as possible after the core system is up and running.
 
-The most invested miners can then enforce this refusal by forking the chain by manually designating a particular proposal being vetoed by an illegitimate holder of the veto power as being invalid, and causing the Proof of Work chain to fork this disputed veto off the chain.
+Block timing will be slower, at 15 seconds, or 4 per minute. This is sufficiently fast for use with a forum system that stores content on IPFS networks, funded by transaction fees for posting these links.
 
-By these two mechanisms combined, it should be possible to permanently ensure that no decision made for the governance of Kismet can change these vitally important foundational rules, nor permit the abuse of this veto power by the majority of miners whose real world, non cheatable investments in mining capacity collectively function in the same way as the veto power itself. 
+## Atomic Swaps
 
-The Veto holder is the political leader, and the Miners are the business leaders. They can nullify each other's attempts to nullify, and force a similar thing to the dissolution of a parliament, annulling a proposal, or annulling the nullification of a proposal, allowing it to be voted on. The Veto Holder will be forced to pass on his power to a successor if the majority of miners keep forking his vetos off the chain, or he/she can use it wisely.
+Once Lightning functionality is implemented, the chain should have atomic swaps implemented with selected counterpart blockchains. This is essential to eliminate the problem of centralised exchanges and their relationship with governments.
 
-Thus, the Veto key provides for two features, creating a child key, which can be revoked, and creating a successor key, which cancels the parent key.
+## Governance
 
-It simply is not in the interests of the miners to change this structure of leadership. The stubborn conservatism of the bitcoin mining community has proven to be very effective in stopping the breaking of the security of bitcoin, and we exploit that strength in Kismet.
-
-3.   ## Sensor Network Causality Consensus
-
-A third feature, optional for financial ledgers, but extremely useful for auditible, collaborative, session based realtime interactive systems, such as game worlds and shared creation environments, is the use of the many to many architecture of classical consensus, combined with probabalistic consensus to rapidly decide a sequence of events within a realtime (100ms) time horizon.
-
-With the relative simplicity of chains that only register leadership allocation to network participants, the idea of creating new ledgers, and stepping outside the box of simple financial ledgers into any kind of collaborative log of events on a network with rapid resolution of sequence, this realtime causality consensus can form part of other ledgers that can be spawned in parallel and operate under any arbitrary consensus that users agree on.
-
-The use of parallel, proof of work chains that only grant leadership means that this protocol can be effectively unbounded in its interconnection and potential userbase as well as enabling fixed and fluid parallelisation of data processing for application specific purposes. The session based realtime protocol is just the first proposed subchain. 
-
-In addition to this, it is probable that the consensus can be used in combination with the realtime competition for leadership role tokens, combined with proximity and latency limitation to distribute risk of monopoly of these fast protocols as well.
-
-Such extended protocols need not necessarily be focused on realtime speeds either, but focus instead on the geographic proximity or affinity of users and the temporary nature of the data, which may not need to be stored in mass duplicate for the purposes of the application.
-
-Limiting membership via a hybrid of proof of work and staking can then enable humans to vet membership in a protocol and provide locality limited governance systems.
-
-This element is a little more nebulous and speculative than the first two, but the primary two elements form a foundation that enables such creative collaboration.
+Changing the rules of the consensus requires upgrading by miners. We are adopting the same conservative change averse policy as bitcoin. We will periodically make a major version upgrade, and if miners don't install it before the fork deadline, it doesn't happen. Simple as that. Then we have to go back to the drawing board, after more consultation. A successful hard fork will come from consultation with our miner-stakeholders.
 
 ## Conclusion
 
 Like all good games, the best rules are the most concise. As such, this is the entire Whitepaper. 
 
-The goal for the first implementation is section 1 and 2. The third section is for future elaboration and intended to be tied back to the first two as their regulatory foundations.
-
-The control of network systems is the ultimate power in human society. The goal of Kismet is to distribute that risk to the most responsible and careful individuals possible. While it looks like just another distributed systems protocol, it is actually the foundation of a system of government as well. 
+We are just bolting on Tendermint consensus to a leadership only chain based on Bitcoin's Nakamoto Consensus. The idea is to create another option for Cosmos based chains to not use proven vulnerable Proof of Stake leadership selection.
