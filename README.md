@@ -1,17 +1,18 @@
-![logo](doc/logoshadow.svg)
+![logo](logoshadow.svg)
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_shield)
 
 # κισμέτ
 
 kismet
 
-Protocol for distributed systems governance
+Hybrid consensus proof of work for leadership for classical pBFT consensus
 
 > Live by the dice, but never go all in - David Vennik
 
 ## About
 
-In distributed systems, there is a not commonly understood distinction between leader selection and consensus. 
+In distributed systems, there is a not commonly understood distinction between leader selection and consensus.
 
 Leadership is the right to publish data. If this right can be bought or stolen for less cost than honest mining, then the entire ledger is untrustworthy.
 
@@ -19,9 +20,9 @@ Consensus is the way that all nodes agree on which data is considered to be corr
 
 Kismet separates leadership selection from consensus by creating a separate chain using Proof of Work for producing a special tokens that issue the right to be a validator, that then are lined up in a queue for a classical consensus based on Tendermint Core that gives fast, regular blocks, while not requiring the complexity of staking, and eliminating the vulnerability to dishonestly acquired stake.
 
-[Whitepaper](docs/whitepaper.md)
+[Whitepaper](whitepaper.md)
 
-[Roadmap](docs/roadmap.md)
+[Roadmap](roadmap.md)
 
 ## Building
 

@@ -1,37 +1,35 @@
-## Welcome to GitHub Pages
+![logo](logoshadow.svg)
 
-You can use the [editor on GitHub](https://github.com/cybriq/kismet/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_shield)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# κισμέτ
 
-### Markdown
+kismet
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Hybrid consensus proof of work for leadership for classical pBFT consensus
 
-```markdown
-Syntax highlighted code block
+> Live by the dice, but never go all in - David Vennik
 
-# Header 1
-## Header 2
-### Header 3
+## About
 
-- Bulleted
-- List
+In distributed systems, there is a not commonly understood distinction between leader selection and consensus.
 
-1. Numbered
-2. List
+Leadership is the right to publish data. If this right can be bought or stolen for less cost than honest mining, then the entire ledger is untrustworthy.
 
-**Bold** and _Italic_ and `Code` text
+Consensus is the way that all nodes agree on which data is considered to be correct or "canonical", also called the "best chain", which is decided in Bitcoin type blockchains by the series of blocks with the lowest cumulative sum of hashes, called the "heaviest", as smaller hashes are more rare and require more attempts to discover.
 
-[Link](url) and ![Image](src)
-```
+Kismet separates leadership selection from consensus by creating a separate chain using Proof of Work for producing a special tokens that issue the right to be a validator, that then are lined up in a queue for a classical consensus based on Tendermint Core that gives fast, regular blocks, while not requiring the complexity of staking, and eliminating the vulnerability to dishonestly acquired stake.
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+[Whitepaper](whitepaper.md)
 
-### Jekyll Themes
+[Roadmap](roadmap.md)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/cybriq/kismet/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Building
 
-### Support or Contact
+todo: make a thing that can be built
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## Licence
+
+Unlicenced, but maybe using things that aren't.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcybriq%2Fkismet.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcybriq%2Fkismet?ref=badge_large)
